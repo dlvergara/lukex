@@ -62,28 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
   }
-
-  /*
-  _makeGetRequest() async {
-    // make GET request
-    String url = 'https://jsonplaceholder.typicode.com/posts';
-    Response response = await get(url);
-    // sample info available in response
-    int statusCode = response.statusCode;
-    Map<String, String> headers = response.headers;
-    String contentType = headers['content-type'];
-    String json = response.body;
-    // TODO convert json to object...
-  }
-  */
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
 
+    double iconSize = 20;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -102,23 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            /*
-            FutureBuilder<Album>(
-              future: futureAlbum,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(snapshot.data.title);
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-
-                // By default, show a loading spinner.
-                return CircularProgressIndicator();
-              },
-            ),
-            */
             DefaultTextStyle(
-              style: Theme.of(context).textTheme.headline2,
+              style: Theme.of(context).textTheme.subtitle1,
               textAlign: TextAlign.center,
               child: FutureBuilder<String>(
                 future: this.providerOne.fetchData(),
@@ -131,11 +99,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icon(
                         Icons.check_circle_outline,
                         color: Colors.green,
-                        size: 60,
+                        size: iconSize,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Text('${snapshot.data}'),
+                        padding: const EdgeInsets.only(top: 1),
+                        child: Text('CocosYLucas: ${snapshot.data}'),
                       )
                     ];
                   } else if (snapshot.hasError) {
@@ -143,10 +111,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icon(
                         Icons.error_outline,
                         color: Colors.red,
-                        size: 60,
+                        size: iconSize,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 16),
+                        padding: const EdgeInsets.only(top: 1),
                         child: Text('Error: ${snapshot.error}'),
                       )
                     ];
@@ -158,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         height: 60,
                       ),
                       const Padding(
-                        padding: EdgeInsets.only(top: 16),
+                        padding: EdgeInsets.only(top: 1),
                         child: Text('Awaiting result...'),
                       )
                     ];
@@ -174,7 +142,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             DefaultTextStyle(
-              style: Theme.of(context).textTheme.headline2,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .subtitle1,
               textAlign: TextAlign.center,
               child: FutureBuilder<String>(
                 future: this.providerTwo.fetchData(),
@@ -187,11 +158,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icon(
                         Icons.check_circle_outline,
                         color: Colors.green,
-                        size: 60,
+                        size: iconSize,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Text('${snapshot.data}'),
+                        padding: const EdgeInsets.only(top: 1),
+                        child: Text('Tkambio: ${snapshot.data}'),
                       )
                     ];
                   } else if (snapshot.hasError) {
@@ -199,10 +170,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icon(
                         Icons.error_outline,
                         color: Colors.red,
-                        size: 60,
+                        size: iconSize,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 16),
+                        padding: const EdgeInsets.only(top: 1),
                         child: Text('Error: ${snapshot.error}'),
                       )
                     ];
@@ -214,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         height: 60,
                       ),
                       const Padding(
-                        padding: EdgeInsets.only(top: 16),
+                        padding: EdgeInsets.only(top: 1),
                         child: Text('Awaiting result...'),
                       )
                     ];
@@ -230,7 +201,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             DefaultTextStyle(
-              style: Theme.of(context).textTheme.headline2,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .subtitle1,
               textAlign: TextAlign.center,
               child: FutureBuilder<String>(
                 future: this.providerThree.fetchData(),
@@ -243,11 +217,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icon(
                         Icons.check_circle_outline,
                         color: Colors.green,
-                        size: 60,
+                        size: iconSize,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Text('${snapshot.data}'),
+                        padding: const EdgeInsets.only(top: 1),
+                        child: Text('Jet Peru: ${snapshot.data}'),
                       )
                     ];
                   } else if (snapshot.hasError) {
@@ -255,10 +229,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icon(
                         Icons.error_outline,
                         color: Colors.red,
-                        size: 60,
+                        size: iconSize,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 16),
+                        padding: const EdgeInsets.only(top: 1),
                         child: Text('Error: ${snapshot.error}'),
                       )
                     ];
@@ -270,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         height: 60,
                       ),
                       const Padding(
-                        padding: EdgeInsets.only(top: 16),
+                        padding: EdgeInsets.only(top: 1),
                         child: Text('Awaiting result...'),
                       )
                     ];
