@@ -94,7 +94,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String> snapshot) {
-                      double minus = double.parse(snapshot.data) - minusConstant;
+                      print(snapshot.data);
+                  double minus = double.parse(snapshot.data) - minusConstant;
                   List<Widget> children;
                   if (snapshot.hasData) {
                     children = <Widget>[
@@ -105,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       Text('CocosYLucas: ${snapshot.data}'),
                       Text('CocosYLucas: ${minus}'),
-                    ];
+                        ];
                       } else if (snapshot.hasError) {
                         children = <Widget>[
                           Icon(

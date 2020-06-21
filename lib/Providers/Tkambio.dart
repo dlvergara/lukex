@@ -30,7 +30,6 @@ class Tkambio implements ProviderInterface {
     //final parsed = jsonDecode(response.body).cast<Map<String, dynamic>>();
     Map<String, dynamic> parsed = jsonDecode(response.body);
     String data = parsed['buy_type_change'];
-    //Map parsed = json.decode(response.body);
 
     return data;
   }
