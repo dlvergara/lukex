@@ -61,6 +61,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Tkambio providerTwo = new Tkambio();
   JetPeru providerThree = new JetPeru();
 
+  String valOne;
+  String valTwo;
+  String valThree;
+
   void _incrementCounter() {
     setState(() {
       _counter++;
@@ -94,9 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String> snapshot) {
-                      print(snapshot.data);
-                  double minus = double.parse(snapshot.data) - minusConstant;
-                  List<Widget> children;
+                      List<Widget> children;
                   if (snapshot.hasData) {
                     children = <Widget>[
                       Icon(
@@ -105,40 +107,39 @@ class _MyHomePageState extends State<MyHomePage> {
                         size: iconSize,
                       ),
                       Text('CocosYLucas: ${snapshot.data}'),
-                      Text('CocosYLucas: ${minus}'),
-                        ];
-                      } else if (snapshot.hasError) {
-                        children = <Widget>[
-                          Icon(
-                            Icons.error_outline,
-                            color: Colors.red,
-                            size: iconSize,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 1),
-                            child: Text('Error: ${snapshot.error}'),
-                          )
-                        ];
-                      } else {
-                        children = <Widget>[
-                          SizedBox(
-                            child: CircularProgressIndicator(),
-                            width: 60,
-                            height: 60,
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.only(top: 1),
-                            child: Text('Awaiting result...'),
-                          )
-                        ];
-                      }
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: children,
-                        ),
-                      );
+                    ];
+                  } else if (snapshot.hasError) {
+                    children = <Widget>[
+                      Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                        size: iconSize,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 1),
+                        child: Text('Error: ${snapshot.error}'),
+                      )
+                    ];
+                  } else {
+                    children = <Widget>[
+                      SizedBox(
+                        child: CircularProgressIndicator(),
+                        width: 60,
+                        height: 60,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 1),
+                        child: Text('Cargando...'),
+                      )
+                    ];
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: children,
+                    ),
+                  );
                 },
               ),
             ),
@@ -153,51 +154,50 @@ class _MyHomePageState extends State<MyHomePage> {
                 // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String> snapshot) {
-                      double minus = double.parse(snapshot.data) -
-                          minusConstant;
-                      List<Widget> children;
-                      if (snapshot.hasData) {
-                        children = <Widget>[
-                          Icon(
-                            Icons.check_circle_outline,
-                            color: Colors.green,
-                            size: iconSize,
-                          ),
-                          Text('Tkambio: ${snapshot.data}'),
-                          Text('Tkambio: ${minus}'),
-                        ];
-                      } else if (snapshot.hasError) {
-                        children = <Widget>[
-                          Icon(
-                            Icons.error_outline,
-                            color: Colors.red,
-                            size: iconSize,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 1),
-                            child: Text('Error: ${snapshot.error}'),
-                          )
-                        ];
-                      } else {
-                        children = <Widget>[
-                          SizedBox(
-                            child: CircularProgressIndicator(),
-                            width: 60,
-                            height: 60,
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.only(top: 1),
-                            child: Text('Awaiting result...'),
-                          )
-                        ];
-                      }
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: children,
-                        ),
-                      );
+                  List<Widget> children;
+                  if (snapshot.hasData) {
+                    double minus = double.parse(snapshot.data) - minusConstant;
+                    children = <Widget>[
+                      Icon(
+                        Icons.check_circle_outline,
+                        color: Colors.green,
+                        size: iconSize,
+                      ),
+                      Text('Tkambio: ${snapshot.data}'),
+                      Text('Tkambio: ${minus}'),
+                    ];
+                  } else if (snapshot.hasError) {
+                    children = <Widget>[
+                      Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                        size: iconSize,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 1),
+                        child: Text('Error: ${snapshot.error}'),
+                      )
+                    ];
+                  } else {
+                    children = <Widget>[
+                      SizedBox(
+                        child: CircularProgressIndicator(),
+                        width: 60,
+                        height: 60,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 1),
+                        child: Text('Cargando...'),
+                      )
+                    ];
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: children,
+                    ),
+                  );
                 },
               ),
             ),
@@ -212,51 +212,50 @@ class _MyHomePageState extends State<MyHomePage> {
                 // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String> snapshot) {
-                      double minus = double.parse(snapshot.data) -
-                          minusConstant;
-                      List<Widget> children;
-                      if (snapshot.hasData) {
-                        children = <Widget>[
-                          Icon(
-                            Icons.check_circle_outline,
-                            color: Colors.green,
-                            size: iconSize,
-                          ),
-                          Text('Jet Peru: ${snapshot.data}'),
-                          Text('Jet Peru: ${minus}'),
-                        ];
-                      } else if (snapshot.hasError) {
-                        children = <Widget>[
-                          Icon(
-                            Icons.error_outline,
-                            color: Colors.red,
-                            size: iconSize,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 1),
-                            child: Text('Error: ${snapshot.error}'),
-                          )
-                        ];
-                      } else {
-                        children = <Widget>[
-                          SizedBox(
-                            child: CircularProgressIndicator(),
-                            width: 60,
-                            height: 60,
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.only(top: 1),
-                            child: Text('Awaiting result...'),
-                          )
-                        ];
-                      }
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: children,
-                        ),
-                      );
+                  List<Widget> children;
+                  if (snapshot.hasData) {
+                    double minus = double.parse(snapshot.data) - minusConstant;
+                    children = <Widget>[
+                      Icon(
+                        Icons.check_circle_outline,
+                        color: Colors.green,
+                        size: iconSize,
+                      ),
+                      Text('Jet Peru: ${snapshot.data}'),
+                      Text('Jet Peru: ${minus}'),
+                    ];
+                  } else if (snapshot.hasError) {
+                    children = <Widget>[
+                      Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                        size: iconSize,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 1),
+                        child: Text('Error: ${snapshot.error}'),
+                      )
+                    ];
+                  } else {
+                    children = <Widget>[
+                      SizedBox(
+                        child: CircularProgressIndicator(),
+                        width: 60,
+                        height: 60,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 1),
+                        child: Text('Cargando...'),
+                      )
+                    ];
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: children,
+                    ),
+                  );
                 },
               ),
             ),

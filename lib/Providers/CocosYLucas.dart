@@ -1,16 +1,12 @@
 import 'dart:convert';
+import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
 import '../ProviderInterface.dart';
-import 'package:http/http.dart' as http;
-import 'dart:math';
-import 'package:html/parser.dart' show parse;
-import 'package:html/dom.dart';
 
 class CocosYLucas implements ProviderInterface {
-  String url = 'https://www.cocosylucasbcp.com/poly/external-exchange-rate';
+  String url = 'https://www.cocosylucasbcp.com/poly/currency-exchanges';
 
   String getData() {
     //String data;
@@ -41,7 +37,6 @@ class CocosYLucas implements ProviderInterface {
 
   Future<String> fetchData() async {
     String result = "0.0";
-    //var response = await http.get(this.url);
     String token = await getToken();
 
     Response response = await get(url, headers: {
@@ -50,17 +45,26 @@ class CocosYLucas implements ProviderInterface {
       'referer': 'https://www.cocosylucasbcp.com/',
       'app-code': 'MY',
     });
-    //print(response.body);
+    print("cocos status: " + response.statusCode.toString());
+    print("cocos response: " + response.body);
 
-    var parsed = json.decode(response.body);
-    if (parsed.length > 0) {
-      for (final i in parsed) {
-        if (i['kind'] == "PARALLEL_MAIN") {
-          print(i);
-          result = i['sellRate'].toStringAsFixed(4);
-          break;
+    if (response.statusCode == 200) {
+      var parsed = json.decode(response.body);
+      if (parsed.containsKey('currencyExchangeList')) {
+        if (parsed['currencyExchangeList'].length > 0) {
+          var exchanges = parsed['currencyExchangeList'];
+          for (final i in exchanges) {
+            if (i['maxUsdPurchase'] == "2499.9999") {
+              result = i['rateSale'];
+              break;
+            }
+          }
         }
+      } else {
+        result = response.body;
       }
+    } else {
+      result = response.body;
     }
 
     return result;
