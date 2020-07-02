@@ -1,13 +1,9 @@
 import 'dart:convert';
+import 'dart:math';
 
-import 'package:html/parser.dart';
 import 'package:http/http.dart';
 
 import '../ProviderInterface.dart';
-
-//import 'dart:html';
-import 'package:http/http.dart' as http;
-import 'dart:math';
 
 class JetPeru implements ProviderInterface {
   String url = 'http://www.jetperu.com.pe/';
@@ -40,7 +36,7 @@ class JetPeru implements ProviderInterface {
         'http://apitc.jetperu.com.pe:5002/api/WebTipoCambio?monedaOrigenId=PEN',
         headers: headers);
 
-    print(response.statusCode);
+    //print(response.statusCode);
     //print(response.body);
     Map<String, dynamic> parsed = jsonDecode(response.body);
     List data = parsed['dato'];

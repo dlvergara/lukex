@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kafka/kafka.dart';
+import 'package:lukex/Providers/CambistaInca.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
 import 'package:lukex/Providers/Tkambio.dart';
@@ -52,10 +53,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   double minusConstant = 0.004;
+  double minValue = 10.0;
 
   CocosYLucas cocosyLucasProvider = new CocosYLucas();
   Tkambio tkambioProvider = new Tkambio();
   JetPeru jetPeruProvider = new JetPeru();
+  CambistaInca cambistaProvider = new CambistaInca();
 
   Future<void> _sendToStorage(String provider, String data) async {
     final now = new DateTime.now();
@@ -71,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var record = new ProducerRecord("lukex_" + provider, 0, formatter, message);
     producer.add(record);
-    var result = await record.result;
+    await record.result; //var result =
     //print(result);
     await producer.close();
   }
@@ -82,9 +85,17 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  bool findMinValue(double value) {
+    if (value < this.minValue) {
+      this.minValue = value;
+      return true;
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    double iconSize = 20;
+    double iconSize = 60;
 
     return Scaffold(
       appBar: AppBar(
@@ -150,7 +161,6 @@ class _MyHomePageState extends State<MyHomePage> {
             Card(
               child: FutureBuilder<String>(
                 future: this.tkambioProvider.fetchData(),
-                // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String> snapshot) {
                   List<Widget> children;
@@ -213,7 +223,6 @@ class _MyHomePageState extends State<MyHomePage> {
             Card(
               child: FutureBuilder<String>(
                 future: this.jetPeruProvider.fetchData(),
-                // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String> snapshot) {
                   List<Widget> children;
@@ -265,15 +274,60 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Card(
-              child: ListTile(
-                leading: FlutterLogo(size: 72.0),
-                title: Text('You have pushed the button this many times:',),
-                subtitle: Text('$_counter', style: Theme
-                    .of(context)
-                    .textTheme
-                    .headline4,),
-                trailing: Icon(Icons.more_vert),
-                isThreeLine: true,
+              child: FutureBuilder<String>(
+                future: this.cambistaProvider.fetchData(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  List<Widget> children;
+                  if (snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.done) {
+                    //bool founded = findMinValue(double.parse(snapshot.data));
+                    //print(founded);
+                    double minus = double.parse(snapshot.data) - minusConstant;
+                    _sendToStorage("CambistaInca", snapshot.data);
+                    children = <Widget>[
+                      ListTile(
+                        leading: FlutterLogo(size: 72.0),
+                        title: Text('CambistaInca'),
+                        subtitle: Text('${snapshot.data} / ${minus}'),
+                        trailing: Icon(Icons.more_vert),
+                        isThreeLine: true,
+                      )
+                    ];
+                  } else if (snapshot.hasError) {
+                    print('Error: ${snapshot.error}');
+                    children = <Widget>[
+                      Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                        size: iconSize,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 1),
+                        child: Text('Error: ${snapshot.error}'),
+                      )
+                    ];
+                  } else {
+                    children = <Widget>[
+                      SizedBox(
+                        child: CircularProgressIndicator(),
+                        width: 60,
+                        height: 60,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 1),
+                        child: Text('Cargando...'),
+                      )
+                    ];
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: children,
+                    ),
+                  );
+                },
               ),
             ),
           ],
