@@ -57,13 +57,9 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   double minusConstant = 0.004;
 
-  CocosYLucas providerOne = new CocosYLucas();
-  Tkambio providerTwo = new Tkambio();
-  JetPeru providerThree = new JetPeru();
-
-  String valOne;
-  String valTwo;
-  String valThree;
+  CocosYLucas cocosyLucasProvider = new CocosYLucas();
+  Tkambio tkambioProvider = new Tkambio();
+  JetPeru jetPeruProvider = new JetPeru();
 
   void _incrementCounter() {
     setState(() {
@@ -73,13 +69,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-
     double iconSize = 20;
 
     return Scaffold(
@@ -87,26 +76,23 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
           children: <Widget>[
-            DefaultTextStyle(
-              style: Theme.of(context).textTheme.subtitle1,
-              textAlign: TextAlign.center,
+            Card(
               child: FutureBuilder<String>(
-                future: this.providerOne.fetchData(),
-                // a previously-obtained Future<String> or null
+                future: this.cocosyLucasProvider.fetchData(),
                 builder:
                     (BuildContext context, AsyncSnapshot<String> snapshot) {
-                      List<Widget> children;
-                  if (snapshot.hasData) {
-                    children = <Widget>[
-                      Icon(
-                        Icons.check_circle_outline,
-                        color: Colors.green,
-                        size: iconSize,
-                      ),
-                      Text('CocosYLucas: ${snapshot.data}'),
+                  List<Widget> children;
+                  if (snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.done) {
+                    children = <Widget>[ListTile(
+                      leading: FlutterLogo(size: 72.0),
+                      title: Text('Cocos y lucas'),
+                      subtitle: Text('${snapshot.data}'),
+                      trailing: Icon(Icons.more_vert),
+                      isThreeLine: true,
+                    )
                     ];
                   } else if (snapshot.hasError) {
                     children = <Widget>[
@@ -120,7 +106,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Text('Error: ${snapshot.error}'),
                       )
                     ];
-                  } else {
+                  }
+                  else {
                     children = <Widget>[
                       SizedBox(
                         child: CircularProgressIndicator(),
@@ -143,29 +130,34 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
             ),
-            DefaultTextStyle(
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .subtitle1,
-              textAlign: TextAlign.center,
+            Card(
               child: FutureBuilder<String>(
-                future: this.providerTwo.fetchData(),
+                future: this.tkambioProvider.fetchData(),
                 // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String> snapshot) {
                   List<Widget> children;
-                  if (snapshot.hasData) {
+                  if (snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.done) {
                     double minus = double.parse(snapshot.data) - minusConstant;
+
+                    children = <Widget>[ListTile(
+                      leading: FlutterLogo(size: 72.0),
+                      title: Text('TKambio'),
+                      subtitle: Text('${snapshot.data} / ${minus}'),
+                      trailing: Icon(Icons.more_vert),
+                      isThreeLine: true,
+                    )
+                    ];
+/*
                     children = <Widget>[
                       Icon(
                         Icons.check_circle_outline,
                         color: Colors.green,
                         size: iconSize,
                       ),
-                      Text('Tkambio: ${snapshot.data}'),
-                      Text('Tkambio: ${minus}'),
                     ];
+ */
                   } else if (snapshot.hasError) {
                     children = <Widget>[
                       Icon(
@@ -201,28 +193,23 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
             ),
-            DefaultTextStyle(
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .subtitle1,
-              textAlign: TextAlign.center,
+            Card(
               child: FutureBuilder<String>(
-                future: this.providerThree.fetchData(),
+                future: this.jetPeruProvider.fetchData(),
                 // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String> snapshot) {
                   List<Widget> children;
-                  if (snapshot.hasData) {
+                  if (snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.done) {
                     double minus = double.parse(snapshot.data) - minusConstant;
-                    children = <Widget>[
-                      Icon(
-                        Icons.check_circle_outline,
-                        color: Colors.green,
-                        size: iconSize,
-                      ),
-                      Text('Jet Peru: ${snapshot.data}'),
-                      Text('Jet Peru: ${minus}'),
+                    children = <Widget>[ListTile(
+                      leading: FlutterLogo(size: 72.0),
+                      title: Text('JetPeru'),
+                      subtitle: Text('${snapshot.data} / ${minus}'),
+                      trailing: Icon(Icons.more_vert),
+                      isThreeLine: true,
+                    )
                     ];
                   } else if (snapshot.hasError) {
                     children = <Widget>[
@@ -259,19 +246,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
             ),
-            const Divider(
-              color: Colors.black,
-              height: 20,
-              thickness: 5,
-              indent: 20,
-              endIndent: 0,
-            ),
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            Card(
+              child: ListTile(
+                leading: FlutterLogo(size: 72.0),
+                title: Text('You have pushed the button this many times:',),
+                subtitle: Text('$_counter', style: Theme
+                    .of(context)
+                    .textTheme
+                    .headline4,),
+                trailing: Icon(Icons.more_vert),
+                isThreeLine: true,
+              ),
             ),
           ],
         ),
@@ -280,7 +265,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
