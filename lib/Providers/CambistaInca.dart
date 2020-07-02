@@ -21,8 +21,8 @@ class CambistaInca implements ProviderInterface {
       'bEsTCPref': "0"
     });
 
-    print(response.statusCode.toString());
-    print(response.body);
+    //print(response.statusCode.toString());
+    //print(response.body);
 
     Map<String, dynamic> parsed = jsonDecode(response.body);
     print(parsed['success']);

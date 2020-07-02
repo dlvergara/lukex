@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
@@ -86,11 +86,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   bool findMinValue(double value) {
+    bool res = false;
     if (value < this.minValue) {
       this.minValue = value;
-      return true;
+      res = true;
     }
-    return false;
+    print(this.minValue);
+    return res;
   }
 
   @override
@@ -112,9 +114,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   List<Widget> children;
                   if (snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.done) {
+                    bool founded = findMinValue(double.parse(snapshot.data));
+
                     _sendToStorage("CocosyLucas", snapshot.data);
                     children = <Widget>[
                       ListTile(
+                        enabled: founded,
                         leading: FlutterLogo(size: 72.0),
                         title: Text('Cocos y lucas'),
                         subtitle: Text('${snapshot.data}'),
@@ -166,15 +171,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   List<Widget> children;
                   if (snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.done) {
+                    bool founded = findMinValue(double.parse(snapshot.data));
+
                     double minus = double.parse(snapshot.data) - minusConstant;
                     _sendToStorage("TKambio", snapshot.data);
-                    children = <Widget>[ListTile(
-                      leading: FlutterLogo(size: 72.0),
-                      title: Text('TKambio'),
-                      subtitle: Text('${snapshot.data} / ${minus}'),
-                      trailing: Icon(Icons.more_vert),
-                      isThreeLine: true,
-                    )
+                    children = <Widget>[
+                      ListTile(
+                        enabled: founded,
+                        leading: FlutterLogo(size: 72.0),
+                        title: Text('TKambio'),
+                        subtitle: Text('${snapshot.data} / ${minus}'),
+                        trailing: Icon(Icons.more_vert),
+                        isThreeLine: true,
+                      )
                     ];
 /*
                     children = <Widget>[
@@ -228,9 +237,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   List<Widget> children;
                   if (snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.done) {
+                    bool founded = findMinValue(double.parse(snapshot.data));
+
                     double minus = double.parse(snapshot.data) - minusConstant;
                     _sendToStorage("JetPeru", snapshot.data);
                     children = <Widget>[ListTile(
+                      enabled: founded,
                       leading: FlutterLogo(size: 72.0),
                       title: Text('JetPeru'),
                       subtitle: Text('${snapshot.data} / ${minus}'),
@@ -281,12 +293,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   List<Widget> children;
                   if (snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.done) {
-                    //bool founded = findMinValue(double.parse(snapshot.data));
-                    //print(founded);
+                    bool founded = findMinValue(double.parse(snapshot.data));
+
                     double minus = double.parse(snapshot.data) - minusConstant;
                     _sendToStorage("CambistaInca", snapshot.data);
                     children = <Widget>[
                       ListTile(
+                        enabled: founded,
                         leading: FlutterLogo(size: 72.0),
                         title: Text('CambistaInca'),
                         subtitle: Text('${snapshot.data} / ${minus}'),
