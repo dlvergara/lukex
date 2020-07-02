@@ -70,12 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     StorageMessage msg = new StorageMessage(data, formatter);
     String message = jsonEncode(msg);
-    //print(message);
 
     var record = new ProducerRecord("lukex_" + provider, 0, formatter, message);
     producer.add(record);
     await record.result; //var result =
-    //print(result);
     await producer.close();
   }
 
@@ -87,6 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool findMinValue(double value) {
     bool res = false;
+    print(value);
     if (value < this.minValue) {
       this.minValue = value;
       res = true;

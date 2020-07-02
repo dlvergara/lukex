@@ -25,7 +25,6 @@ class CambistaInca implements ProviderInterface {
     //print(response.body);
 
     Map<String, dynamic> parsed = jsonDecode(response.body);
-    print(parsed['success']);
     if (parsed['success']) {
       resultado = parsed['data']['tipocambio']['0']['nTCVenta'];
     } else {
