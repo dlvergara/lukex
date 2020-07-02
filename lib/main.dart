@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:kafka/kafka.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
 import 'package:lukex/Providers/Tkambio.dart';
+import 'package:lukex/Util/StorageMessage.dart';
 
 void main() {
   runApp(MyApp());
@@ -61,6 +66,25 @@ class _MyHomePageState extends State<MyHomePage> {
   Tkambio tkambioProvider = new Tkambio();
   JetPeru jetPeruProvider = new JetPeru();
 
+  Future<void> _sendToStorage(String provider, String data) async {
+    final now = new DateTime.now();
+    String formatter = DateFormat('y-M-d_H:m:s').format(now);
+
+    var config = new ProducerConfig(bootstrapServers: ['107.170.208.14:9092']);
+    var producer = new Producer<String, String>(
+        new StringSerializer(), new StringSerializer(), config);
+
+    StorageMessage msg = new StorageMessage(data, formatter);
+    String message = jsonEncode(msg);
+    //print(message);
+
+    var record = new ProducerRecord("lukex_" + provider, 0, formatter, message);
+    producer.add(record);
+    var result = await record.result;
+    //print(result);
+    await producer.close();
+  }
+
   void _incrementCounter() {
     setState(() {
       _counter++;
@@ -86,13 +110,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   List<Widget> children;
                   if (snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.done) {
-                    children = <Widget>[ListTile(
-                      leading: FlutterLogo(size: 72.0),
-                      title: Text('Cocos y lucas'),
-                      subtitle: Text('${snapshot.data}'),
-                      trailing: Icon(Icons.more_vert),
-                      isThreeLine: true,
-                    )
+                    _sendToStorage("CocosyLucas", snapshot.data);
+                    children = <Widget>[
+                      ListTile(
+                        leading: FlutterLogo(size: 72.0),
+                        title: Text('Cocos y lucas'),
+                        subtitle: Text('${snapshot.data}'),
+                        trailing: Icon(Icons.more_vert),
+                        isThreeLine: true,
+                      )
                     ];
                   } else if (snapshot.hasError) {
                     children = <Widget>[
@@ -140,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.done) {
                     double minus = double.parse(snapshot.data) - minusConstant;
-
+                    _sendToStorage("TKambio", snapshot.data);
                     children = <Widget>[ListTile(
                       leading: FlutterLogo(size: 72.0),
                       title: Text('TKambio'),
@@ -203,6 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.done) {
                     double minus = double.parse(snapshot.data) - minusConstant;
+                    _sendToStorage("JetPeru", snapshot.data);
                     children = <Widget>[ListTile(
                       leading: FlutterLogo(size: 72.0),
                       title: Text('JetPeru'),

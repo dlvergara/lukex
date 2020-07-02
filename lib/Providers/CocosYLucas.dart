@@ -45,8 +45,8 @@ class CocosYLucas implements ProviderInterface {
       'referer': 'https://www.cocosylucasbcp.com/',
       'app-code': 'MY',
     });
-    print("cocos status: " + response.statusCode.toString());
-    print("cocos response: " + response.body);
+    //print("cocos status: " + response.statusCode.toString());
+    //print("cocos response: " + response.body);
 
     if (response.statusCode == 200) {
       var parsed = json.decode(response.body);
