@@ -21,15 +21,27 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  #HTTP Calls
   http: ^0.12.0+4
+
+  #DOM
   html: ^0.14.0+3
+
+  #Flutter
   flutter:
     sdk: flutter
+
+  #Kafka
   kafka:
     git:
       url: https://github.com/dart-kafka/kafka.git
       ref: kafka-0.10
+
+  #Date formats
   intl: ^0.16.1
+
+  #URL launcher
+  url_launcher: ^5.4.11
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

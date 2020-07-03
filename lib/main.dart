@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kafka/kafka.dart';
@@ -8,6 +9,9 @@ import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
 import 'package:lukex/Providers/Tkambio.dart';
 import 'package:lukex/Util/StorageMessage.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'ProviderInterface.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,7 +33,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.blue,
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
@@ -51,7 +55,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   double minusConstant = 0.004;
   double minValue = 10.0;
 
@@ -78,25 +81,125 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+    setState(() {});
   }
 
   bool findMinValue(double value) {
     bool res = false;
-    print(value);
     if (value < this.minValue) {
       this.minValue = value;
       res = true;
     }
-    print(this.minValue);
     return res;
+  }
+
+  List<Widget> getChildren(
+      AsyncSnapshot<String> snapshot, ProviderInterface provider) {
+    List<Widget> children;
+    double exchangeValue = 0.0;
+    _sendToStorage(provider.name, snapshot.data);
+    Color fontColor = Colors.grey;
+    try {
+      exchangeValue = double.parse(snapshot.data);
+      bool founded = findMinValue(exchangeValue);
+      if (founded) {
+        fontColor = Colors.green;
+      }
+      double minus = exchangeValue - minusConstant;
+      children = <Widget>[
+        ListTile(
+          enabled: true,
+          leading: FlutterLogo(size: 72.0),
+          title: Text(provider.name),
+          subtitle: Text(
+            '${snapshot.data} / ${minus}',
+            style: TextStyle(
+              color: fontColor,
+            ),
+          ),
+          trailing: Icon(Icons.more_vert),
+          isThreeLine: true,
+          onTap: () {
+            _launchURL(provider.publicUrl);
+          },
+        )
+      ];
+    } on Exception {
+      print('Format error!');
+      children = <Widget>[
+        ListTile(
+          enabled: true,
+          leading: FlutterLogo(size: 72.0),
+          title: Text(provider.name),
+          subtitle: Text('${snapshot.data}'),
+          trailing: Icon(Icons.more_vert),
+          isThreeLine: true,
+          onTap: () {
+            _launchURL(provider.publicUrl);
+          },
+        )
+      ];
+    }
+
+    return children;
+  }
+
+  List<Widget> getErrorChildren(snapshot) {
+    double iconSize = 60;
+    return <Widget>[
+      Icon(
+        Icons.error_outline,
+        color: Colors.red,
+        size: iconSize,
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 1),
+        child: Text('Error: ${snapshot.error}'),
+      )
+    ];
+  }
+
+  List<Widget> getLoadingChildren() {
+    return <Widget>[
+      SizedBox(
+        child: CircularProgressIndicator(),
+        width: 60,
+        height: 60,
+      ),
+      const Padding(
+        padding: EdgeInsets.only(top: 1),
+        child: Text('Cargando...'),
+      )
+    ];
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  List<Widget> buildChildren(
+      AsyncSnapshot<String> snapshot, ProviderInterface provider) {
+    List<Widget> children;
+    if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+      //print(provider.name + " - data arrived!");
+      children = getChildren(snapshot, provider);
+    } else if (snapshot.hasError) {
+      //print(provider.name + " - error: "+ snapshot.error);
+      children = getErrorChildren(snapshot);
+    } else {
+      //print(provider.name + " - loading...");
+      children = getLoadingChildren();
+    }
+    return children;
   }
 
   @override
   Widget build(BuildContext context) {
-    double iconSize = 60;
+    this.minValue = 10;
 
     return Scaffold(
       appBar: AppBar(
@@ -108,50 +211,10 @@ class _MyHomePageState extends State<MyHomePage> {
             Card(
               child: FutureBuilder<String>(
                 future: this.cocosyLucasProvider.fetchData(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  List<Widget> children;
-                  if (snapshot.hasData &&
-                      snapshot.connectionState == ConnectionState.done) {
-                    bool founded = findMinValue(double.parse(snapshot.data));
-
-                    _sendToStorage("CocosyLucas", snapshot.data);
-                    children = <Widget>[
-                      ListTile(
-                        enabled: founded,
-                        leading: FlutterLogo(size: 72.0),
-                        title: Text('Cocos y lucas'),
-                        subtitle: Text('${snapshot.data}'),
-                        trailing: Icon(Icons.more_vert),
-                        isThreeLine: true,
-                      )
-                    ];
-                  } else if (snapshot.hasError) {
-                    children = <Widget>[
-                      Icon(
-                        Icons.error_outline,
-                        color: Colors.red,
-                        size: iconSize,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1),
-                        child: Text('Error: ${snapshot.error}'),
-                      )
-                    ];
-                  }
-                  else {
-                    children = <Widget>[
-                      SizedBox(
-                        child: CircularProgressIndicator(),
-                        width: 60,
-                        height: 60,
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 1),
-                        child: Text('Cargando...'),
-                      )
-                    ];
-                  }
+                builder: (BuildContext context,
+                    AsyncSnapshot<String> snapshot) {
+                  List<Widget> children = buildChildren(
+                      snapshot, this.cocosyLucasProvider);
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -165,59 +228,10 @@ class _MyHomePageState extends State<MyHomePage> {
             Card(
               child: FutureBuilder<String>(
                 future: this.tkambioProvider.fetchData(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  List<Widget> children;
-                  if (snapshot.hasData &&
-                      snapshot.connectionState == ConnectionState.done) {
-                    bool founded = findMinValue(double.parse(snapshot.data));
-
-                    double minus = double.parse(snapshot.data) - minusConstant;
-                    _sendToStorage("TKambio", snapshot.data);
-                    children = <Widget>[
-                      ListTile(
-                        enabled: founded,
-                        leading: FlutterLogo(size: 72.0),
-                        title: Text('TKambio'),
-                        subtitle: Text('${snapshot.data} / ${minus}'),
-                        trailing: Icon(Icons.more_vert),
-                        isThreeLine: true,
-                      )
-                    ];
-/*
-                    children = <Widget>[
-                      Icon(
-                        Icons.check_circle_outline,
-                        color: Colors.green,
-                        size: iconSize,
-                      ),
-                    ];
- */
-                  } else if (snapshot.hasError) {
-                    children = <Widget>[
-                      Icon(
-                        Icons.error_outline,
-                        color: Colors.red,
-                        size: iconSize,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1),
-                        child: Text('Error: ${snapshot.error}'),
-                      )
-                    ];
-                  } else {
-                    children = <Widget>[
-                      SizedBox(
-                        child: CircularProgressIndicator(),
-                        width: 60,
-                        height: 60,
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 1),
-                        child: Text('Cargando...'),
-                      )
-                    ];
-                  }
+                builder: (BuildContext context,
+                    AsyncSnapshot<String> snapshot) {
+                  List<Widget> children = buildChildren(
+                      snapshot, this.tkambioProvider);
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -231,49 +245,10 @@ class _MyHomePageState extends State<MyHomePage> {
             Card(
               child: FutureBuilder<String>(
                 future: this.jetPeruProvider.fetchData(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  List<Widget> children;
-                  if (snapshot.hasData &&
-                      snapshot.connectionState == ConnectionState.done) {
-                    bool founded = findMinValue(double.parse(snapshot.data));
-
-                    double minus = double.parse(snapshot.data) - minusConstant;
-                    _sendToStorage("JetPeru", snapshot.data);
-                    children = <Widget>[ListTile(
-                      enabled: founded,
-                      leading: FlutterLogo(size: 72.0),
-                      title: Text('JetPeru'),
-                      subtitle: Text('${snapshot.data} / ${minus}'),
-                      trailing: Icon(Icons.more_vert),
-                      isThreeLine: true,
-                    )
-                    ];
-                  } else if (snapshot.hasError) {
-                    children = <Widget>[
-                      Icon(
-                        Icons.error_outline,
-                        color: Colors.red,
-                        size: iconSize,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1),
-                        child: Text('Error: ${snapshot.error}'),
-                      )
-                    ];
-                  } else {
-                    children = <Widget>[
-                      SizedBox(
-                        child: CircularProgressIndicator(),
-                        width: 60,
-                        height: 60,
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 1),
-                        child: Text('Cargando...'),
-                      )
-                    ];
-                  }
+                builder: (BuildContext context,
+                    AsyncSnapshot<String> snapshot) {
+                  List<Widget> children = buildChildren(
+                      snapshot, this.jetPeruProvider);
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -287,51 +262,10 @@ class _MyHomePageState extends State<MyHomePage> {
             Card(
               child: FutureBuilder<String>(
                 future: this.cambistaProvider.fetchData(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  List<Widget> children;
-                  if (snapshot.hasData &&
-                      snapshot.connectionState == ConnectionState.done) {
-                    bool founded = findMinValue(double.parse(snapshot.data));
-
-                    double minus = double.parse(snapshot.data) - minusConstant;
-                    _sendToStorage("CambistaInca", snapshot.data);
-                    children = <Widget>[
-                      ListTile(
-                        enabled: founded,
-                        leading: FlutterLogo(size: 72.0),
-                        title: Text('CambistaInca'),
-                        subtitle: Text('${snapshot.data} / ${minus}'),
-                        trailing: Icon(Icons.more_vert),
-                        isThreeLine: true,
-                      )
-                    ];
-                  } else if (snapshot.hasError) {
-                    print('Error: ${snapshot.error}');
-                    children = <Widget>[
-                      Icon(
-                        Icons.error_outline,
-                        color: Colors.red,
-                        size: iconSize,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1),
-                        child: Text('Error: ${snapshot.error}'),
-                      )
-                    ];
-                  } else {
-                    children = <Widget>[
-                      SizedBox(
-                        child: CircularProgressIndicator(),
-                        width: 60,
-                        height: 60,
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 1),
-                        child: Text('Cargando...'),
-                      )
-                    ];
-                  }
+                builder: (BuildContext context,
+                    AsyncSnapshot<String> snapshot) {
+                  List<Widget> children = buildChildren(
+                      snapshot, this.cambistaProvider);
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

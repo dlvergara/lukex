@@ -5,7 +5,9 @@ import 'package:http/http.dart';
 import '../ProviderInterface.dart';
 
 class Tkambio implements ProviderInterface {
+  String name = "TKambio";
   String url = 'https://tkambio.com/wp-admin/admin-ajax.php';
+  String publicUrl = 'https://tkambio.com';
 
   @override
   String getData() {
@@ -20,7 +22,7 @@ class Tkambio implements ProviderInterface {
     Response response = await post(url, body: {'action': 'get_tipo_cambio'});
 
     // sample info available in response
-    int statusCode = response.statusCode;
+    //int statusCode = response.statusCode;
 
     Map<String, dynamic> parsed = jsonDecode(response.body);
     String data = parsed['buy_type_change'];

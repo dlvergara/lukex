@@ -6,7 +6,9 @@ import 'package:http/http.dart';
 import '../ProviderInterface.dart';
 
 class JetPeru implements ProviderInterface {
+  String name = "JetPeru";
   String url = 'http://www.jetperu.com.pe/';
+  String publicUrl = 'http://www.jetperu.com.pe';
 
   String getData() {
     //var data = this._fetchData();

@@ -5,12 +5,13 @@ import 'package:http/http.dart';
 import '../ProviderInterface.dart';
 
 class CambistaInca implements ProviderInterface {
+  String name = "CambistaInca";
   String url = 'https://cambistainka.com';
+  String publicUrl = 'https://cambistainka.com';
 
   Future<String> fetchData() async {
     String resultado = "20.1";
     String fullUrl = this.url + '/admin/obtenertipocambio.php';
-    print(fullUrl);
 
     Response response = await post(fullUrl, headers: {
       'Content-type': "application/x-www-form-urlencoded; charset=UTF-8"

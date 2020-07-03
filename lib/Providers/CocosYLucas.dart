@@ -6,6 +6,8 @@ import 'package:http/http.dart';
 import '../ProviderInterface.dart';
 
 class CocosYLucas implements ProviderInterface {
+  String name = "CocosyLucas";
+  String publicUrl = 'https://www.cocosylucasbcp.com/';
   String url = 'https://www.cocosylucasbcp.com/poly/currency-exchanges';
 
   String getData() {
@@ -19,7 +21,7 @@ class CocosYLucas implements ProviderInterface {
 
   Future<String> getToken() async {
     Response response =
-        await post('https://www.cocosylucasbcp.com/toc', headers: {
+    await post('https://www.cocosylucasbcp.com/toc', headers: {
       'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
       'app-code': 'MY',
       'referer': 'https://www.cocosylucasbcp.com/',
