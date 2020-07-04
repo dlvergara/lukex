@@ -164,82 +164,113 @@ class MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
         title: Text(widget.title),
+        /*
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings),
+            /*
+            onPressed: () {
+              print('Saltar a config');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => btConfig),
+              );
+            },
+            */
+          ),
+        ]*/
       ),
-      body: Center(
-        child: ListView(
+      body: Column(children: <Widget>[
+        ButtonBar(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Card(
-              child: FutureBuilder<String>(
-                future: this.cocosyLucasProvider.fetchData(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  List<Widget> children =
-                      buildChildren(snapshot, this.cocosyLucasProvider);
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: children,
-                    ),
-                  );
-                },
-              ),
+            new RaisedButton(
+              child: new Text('Hello'),
+              onPressed: null,
             ),
-            Card(
-              child: FutureBuilder<String>(
-                future: this.tkambioProvider.fetchData(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  List<Widget> children =
-                      buildChildren(snapshot, this.tkambioProvider);
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: children,
-                    ),
-                  );
-                },
-              ),
-            ),
-            Card(
-              child: FutureBuilder<String>(
-                future: this.jetPeruProvider.fetchData(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  List<Widget> children =
-                      buildChildren(snapshot, this.jetPeruProvider);
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: children,
-                    ),
-                  );
-                },
-              ),
-            ),
-            Card(
-              child: FutureBuilder<String>(
-                future: this.cambistaProvider.fetchData(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  List<Widget> children =
-                      buildChildren(snapshot, this.cambistaProvider);
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: children,
-                    ),
-                  );
-                },
-              ),
+            new RaisedButton(
+              child: new Text('Hi'),
+              onPressed: null,
             ),
           ],
         ),
-      ),
+        Expanded(
+          child: ListView(
+            children: <Widget>[
+              Card(
+                child: FutureBuilder<String>(
+                  future: this.cocosyLucasProvider.fetchData(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    List<Widget> children =
+                        buildChildren(snapshot, this.cocosyLucasProvider);
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: children,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Card(
+                child: FutureBuilder<String>(
+                  future: this.tkambioProvider.fetchData(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    List<Widget> children =
+                        buildChildren(snapshot, this.tkambioProvider);
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: children,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Card(
+                child: FutureBuilder<String>(
+                  future: this.jetPeruProvider.fetchData(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    List<Widget> children =
+                        buildChildren(snapshot, this.jetPeruProvider);
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: children,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Card(
+                child: FutureBuilder<String>(
+                  future: this.cambistaProvider.fetchData(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    List<Widget> children =
+                        buildChildren(snapshot, this.cambistaProvider);
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: children,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        )
+      ]),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Refresh',
