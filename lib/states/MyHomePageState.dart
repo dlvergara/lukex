@@ -9,6 +9,7 @@ import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
 import 'package:lukex/Providers/Tkambio.dart';
 import 'package:lukex/Util/StorageMessage.dart';
+import 'package:lukex/pages/GraphPage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../ProviderInterface.dart';
@@ -22,6 +23,10 @@ class MyHomePageState extends State<MyHomePage> {
   Tkambio tkambioProvider = new Tkambio();
   JetPeru jetPeruProvider = new JetPeru();
   CambistaInca cambistaProvider = new CambistaInca();
+  GraphPage graphPage = new GraphPage(
+    title: 'Lukex - Gráfica',
+    animate: true,
+  );
 
   Future<void> _sendToStorage(String provider, String data) async {
     final now = new DateTime.now();
@@ -187,12 +192,14 @@ class MyHomePageState extends State<MyHomePage> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             new RaisedButton(
-              child: new Text('Hello'),
-              onPressed: null,
-            ),
-            new RaisedButton(
-              child: new Text('Hi'),
-              onPressed: null,
+              child: new Text('Gráfica'),
+              onPressed: () {
+                print('Saltar a graficas');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => this.graphPage),
+                );
+              },
             ),
           ],
         ),
