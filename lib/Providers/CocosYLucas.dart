@@ -21,7 +21,7 @@ class CocosYLucas implements ProviderInterface {
 
   Future<String> getToken() async {
     Response response =
-    await post('https://www.cocosylucasbcp.com/toc', headers: {
+        await post('https://www.cocosylucasbcp.com/toc', headers: {
       'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
       'app-code': 'MY',
       'referer': 'https://www.cocosylucasbcp.com/',
