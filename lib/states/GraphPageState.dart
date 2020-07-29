@@ -15,6 +15,8 @@ import '../Util/LinearData.dart';
 
 class GraphPageState extends State<GraphPage> {
   List<charts.Series<LinearData, int>> seriesListGlobal = [];
+  String _time;
+  Map<String, num> _measures;
 
   ///Providers
   List<ProviderInterface> getProviders() {
@@ -84,7 +86,7 @@ class GraphPageState extends State<GraphPage> {
           'WHERE provider = ? '
           'AND exchange < 10 '
           'ORDER BY `timestamp` '
-          'LIMIT 50, 10',
+          'LIMIT 50 ',
           ["lukex_" + element.name]);
       print(element.name + "-> " + results.length.toString());
 
@@ -113,9 +115,54 @@ class GraphPageState extends State<GraphPage> {
     return seriesList;
   }
 
+  // Listens to the underlying selection changes, and updates the information
+  // relevant to building the primitive legend like information under the
+  // chart.
+  _onSelectionChanged(charts.SelectionModel model) {
+    final selectedDatum = model.selectedDatum;
+
+    String time;
+    final measures = <String, num>{};
+
+    // We get the model that updated with a list of [SeriesDatum] which is
+    // simply a pair of series & datum.
+    //
+    // Walk the selection updating the measures map, storing off the sales and
+    // series name for each selection point.
+    if (selectedDatum.isNotEmpty) {
+      time = selectedDatum.first.datum.year;
+      selectedDatum.forEach((charts.SeriesDatum datumPair) {
+        measures[datumPair.series.displayName] = datumPair.datum.sales;
+      });
+    }
+
+    // Request a build.
+    setState(() {
+      _time = time;
+      _measures = measures;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     seriesListGlobal.clear();
+    final measuresLabel = <Widget>[];
+
+    // If there is a selection, then include the details.
+    if (_time != null) {
+      measuresLabel.add(new Padding(
+          padding: new EdgeInsets.only(top: 5.0),
+          child: new Text(_time.toString())
+      ));
+    }
+
+    //var entries = _measures.values.toList();
+    //entries.sort((a,b) => entries[a] - entries[b]);
+    //_measures = Map<String, int>.fromEntries(entries);
+
+    _measures?.forEach((String series, num value) {
+      measuresLabel.add(new Text('${series}: ${value}'));
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -145,17 +192,28 @@ class GraphPageState extends State<GraphPage> {
                     if (snapshot.connectionState == ConnectionState.done &&
                         snapshot.hasData) {
                       element = new charts.LineChart(seriesListGlobal,
-                          animate: widget.animate,
-                          customSeriesRenderers: [
-                            new charts.LineRendererConfig(
-                              includeLine: true,
-                              includePoints: true,
-                              customRendererId: 'customArea',
-                              includeArea: false,
-                              stacked: true,
-                              //symbolRenderer: new charts.CustomSymbolRenderer()
-                            ),
-                          ]);
+                        animate: widget.animate,
+                        customSeriesRenderers: [
+                          new charts.LineRendererConfig(
+                            includeLine: true,
+                            includePoints: true,
+                            customRendererId: 'customArea',
+                            includeArea: false,
+                            stacked: true,
+                            //symbolRenderer: new charts.CustomSymbolRenderer()
+                          ),
+                        ],
+                        behaviors: [
+                          //new charts.ChartTitle("Value", behaviorPosition: charts.BehaviorPosition.start, titleOutsideJustification: charts.OutsideJustification.middleDrawArea),
+                        ],
+                        selectionModels: [
+                          new charts.SelectionModelConfig(
+                            type: charts.SelectionModelType.info,
+                            changedListener: _onSelectionChanged,
+                            //listener: _onSelectionChanged,
+                          )
+                        ],
+                      );
                     } else {
                       //Loading
                       element = FittedBox(
@@ -165,7 +223,7 @@ class GraphPageState extends State<GraphPage> {
                     }
                     return element;
                   })),
-        ],
+        ] + measuresLabel,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

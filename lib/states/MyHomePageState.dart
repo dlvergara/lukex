@@ -8,6 +8,7 @@ import 'package:lukex/Providers/CambistaInca.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
 import 'package:lukex/Providers/Tkambio.dart';
+import 'package:lukex/Providers/TuCambista.dart';
 import 'package:lukex/Util/StorageMessage.dart';
 import 'package:lukex/pages/GraphPage.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,6 +24,7 @@ class MyHomePageState extends State<MyHomePage> {
   Tkambio tkambioProvider = new Tkambio();
   JetPeru jetPeruProvider = new JetPeru();
   CambistaInca cambistaProvider = new CambistaInca();
+  TuCambista tuCambistaProvider = new TuCambista();
   GraphPage graphPage = new GraphPage(
     title: 'Lukex - Gráfica',
     animate: true,
@@ -264,6 +266,23 @@ class MyHomePageState extends State<MyHomePage> {
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     List<Widget> children =
                         buildChildren(snapshot, this.cambistaProvider);
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: children,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Card(
+                child: FutureBuilder<String>(
+                  future: this.tuCambistaProvider.fetchData(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    List<Widget> children =
+                        buildChildren(snapshot, this.tuCambistaProvider);
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
