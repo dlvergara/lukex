@@ -8,6 +8,7 @@ import 'package:lukex/Providers/CambistaInca.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
 import 'package:lukex/Providers/Tkambio.dart';
+import 'package:lukex/Providers/TuCambista.dart';
 import 'package:lukex/Util/Database.dart';
 import 'package:lukex/pages/GraphPage.dart';
 
@@ -24,12 +25,14 @@ class GraphPageState extends State<GraphPage> {
     Tkambio tkambioProvider = new Tkambio();
     JetPeru jetPeruProvider = new JetPeru();
     CambistaInca cambistaProvider = new CambistaInca();
+    TuCambista tuCambistaProvider = new TuCambista();
 
     List<ProviderInterface> list = [
       cocosyLucasProvider,
       tkambioProvider,
       jetPeruProvider,
       cambistaProvider,
+      tuCambistaProvider,
     ];
     return list;
   }
@@ -85,8 +88,8 @@ class GraphPageState extends State<GraphPage> {
           'SELECT * FROM exchange '
           'WHERE provider = ? '
           'AND exchange < 10 '
-          'ORDER BY `timestamp` '
-          'LIMIT 50 ',
+          'ORDER BY `timestamp` DESC '
+          'LIMIT 10 ',
           ["lukex_" + element.name]);
       print(element.name + "-> " + results.length.toString());
 

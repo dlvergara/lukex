@@ -5,7 +5,7 @@ import 'package:http/http.dart';
 import '../ProviderInterface.dart';
 
 class TuCambista implements ProviderInterface {
-  String name = "Tu Cambista";
+  String name = "TuCambista";
   String url = 'https://app.tucambista.pe/';
   String publicUrl = 'https://www.tucambista.pe/';
 
@@ -22,8 +22,8 @@ class TuCambista implements ProviderInterface {
       },
     );
 
-    print(response.statusCode.toString());
-    print(response.body);
+    //print(response.statusCode.toString());
+    //print(response.body);
 
     Map<String, dynamic> parsed = jsonDecode(response.body);
     if (parsed['id'] != "") {
