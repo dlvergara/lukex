@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kafka/kafka.dart';
+import 'package:lukex/Providers/Acomo.dart';
 import 'package:lukex/Providers/CambistaInca.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
@@ -23,11 +24,13 @@ class MyHomePageState extends State<MyHomePage> {
   var dataCollection = [];
   var queryDate = "";
 
-  CocosYLucas cocosyLucasProvider = new CocosYLucas();
-  Tkambio tkambioProvider = new Tkambio();
+  TuCambista tuCambistaProvider = new TuCambista();
   JetPeru jetPeruProvider = new JetPeru();
   CambistaInca cambistaProvider = new CambistaInca();
-  TuCambista tuCambistaProvider = new TuCambista();
+  Acomo acomoProvider = new Acomo();
+
+  CocosYLucas cocosyLucasProvider = new CocosYLucas();
+  Tkambio tkambioProvider = new Tkambio();
 
   GraphPage graphPage = new GraphPage(
     title: 'Lukex - Gráfica',
@@ -175,11 +178,13 @@ class MyHomePageState extends State<MyHomePage> {
     this.queryDate = new DateTime.now().toString();
 
     var providerCollection = [
-      this.tuCambistaProvider,
       this.jetPeruProvider,
-      this.tkambioProvider,
-      this.cocosyLucasProvider,
+      this.tuCambistaProvider,
       this.cambistaProvider,
+      this.acomoProvider,
+
+      //this.tkambioProvider,
+      //this.cocosyLucasProvider,
     ];
 
     providerCollection.forEach((provider) {
@@ -218,12 +223,12 @@ class MyHomePageState extends State<MyHomePage> {
       finalCards.add(element[1]);
     });
 
-    print(this.dataCollection);
+    //print(this.dataCollection);
     if (this.dataCollection.length > 0) {
-      print("Ordenar!");
+      //print("Ordenar!");
       finalCards = <Widget>[];
 
-      print("cantidad 1: " + this.dataCollection.length.toString());
+      //print("cantidad 1: " + this.dataCollection.length.toString());
       this.dataCollection.sort((a, b) => a[1].compareTo(b[1]));
 
       this.dataCollection.forEach((dataElement) {
@@ -235,13 +240,13 @@ class MyHomePageState extends State<MyHomePage> {
         }
       });
 
-      print("cantidad 2: " + this.dataCollection.length.toString());
+      //print("cantidad 2: " + this.dataCollection.length.toString());
 
-      print(finalCards.length);
-      print('fin ordernar');
+      //print(finalCards.length);
+      //print('fin ordernar');
       this.dataCollection = [];
     }
-    print(this.dataCollection);
+    //print(this.dataCollection);
 
     return Scaffold(
       appBar: AppBar(
