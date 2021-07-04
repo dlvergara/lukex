@@ -1,16 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:kafka/kafka.dart';
 import 'package:lukex/Providers/Acomo.dart';
 import 'package:lukex/Providers/CambistaInca.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
 import 'package:lukex/Providers/Tkambio.dart';
 import 'package:lukex/Providers/TuCambista.dart';
-import 'package:lukex/Util/StorageMessage.dart';
+import 'package:lukex/Util/Database.dart';
 import 'package:lukex/pages/GraphPage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,40 +20,27 @@ class MyHomePageState extends State<MyHomePage> {
   var dataCollection = [];
   var queryDate = "";
 
-  TuCambista tuCambistaProvider = new TuCambista();
-  JetPeru jetPeruProvider = new JetPeru();
-  CambistaInca cambistaProvider = new CambistaInca();
-  Acomo acomoProvider = new Acomo();
-
-  CocosYLucas cocosyLucasProvider = new CocosYLucas();
-  Tkambio tkambioProvider = new Tkambio();
-
   GraphPage graphPage = new GraphPage(
     title: 'Lukex - Gráfica',
     animate: true,
   );
 
+  /**
+   * Send to database
+   */
   Future<void> _sendToStorage(String provider, String data) async {
-    final now = new DateTime.now();
-    String formatter = DateFormat('y-M-d_H:m:s').format(now);
-
-    var config = new ProducerConfig(bootstrapServers: ['107.170.208.14:9092']);
-    var producer = new Producer<String, String>(
-        new StringSerializer(), new StringSerializer(), config);
-
-    StorageMessage msg = new StorageMessage(data, formatter);
-    String message = jsonEncode(msg);
-
-    var record = new ProducerRecord("lukex_" + provider, 0, formatter, message);
-    producer.add(record);
-    await record.result; //var result =
-    await producer.close();
+    var db = new Database();
+    var conn = await db.getConnection();
+    var insertQuery =
+        "INSERT INTO lukex.exchange VALUES (null, NOW(), ?, ?, '--')";
+    await conn.query(insertQuery, ["lukex_" + provider, data]);
   }
 
   //Refresh
   void _incrementCounter() {
-    this.getValues();
-    setState(() {});
+    this.getValues().then((value) {
+      setState(() {});
+    });
   }
 
   bool findMinValue(double value) {
@@ -171,21 +154,54 @@ class MyHomePageState extends State<MyHomePage> {
     return children;
   }
 
+  Future<List> GetProviders() async {
+    var providerList = [];
+    try {
+      var db = new Database();
+      var conn = await db.getConnection();
+      var results = await conn.query(
+          'SELECT * FROM lukex.providers pro '
+          'WHERE pro.status = 1 '
+          'ORDER BY pro.sort',
+          []);
+      print("Providers found -> " + results.length.toString());
+      for (var row in results) {
+        String name = row['class_name'];
+        switch (name) {
+          case 'TuCambista':
+            providerList.add(new TuCambista());
+            break;
+          case 'JetPeru':
+            providerList.add(new JetPeru());
+            break;
+          case 'CambistaInca':
+            providerList.add(new CambistaInca());
+            break;
+          case 'Acomo':
+            providerList.add(new Acomo());
+            break;
+          case 'Tkambio':
+            providerList.add(new Tkambio());
+            break;
+          case 'CocosYLucas':
+            providerList.add(new CocosYLucas());
+            break;
+        }
+      }
+    } catch (e) {
+      print('Printing out the message: $e');
+    }
+
+    return providerList;
+  }
+
   // Get values
-  void getValues() {
+  Future<void> getValues() async {
     this.cards = [];
     this.dataCollection = [];
     this.queryDate = new DateTime.now().toString();
 
-    var providerCollection = [
-      this.jetPeruProvider,
-      this.tuCambistaProvider,
-      this.cambistaProvider,
-      this.acomoProvider,
-
-      //this.tkambioProvider,
-      //this.cocosyLucasProvider,
-    ];
+    List<dynamic> providerCollection = await this.GetProviders();
 
     providerCollection.forEach((provider) {
       Widget card = Card(
@@ -211,7 +227,9 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    this.getValues();
+    this.getValues().then((value) {
+      setState(() {});
+    });
   }
 
   @override
