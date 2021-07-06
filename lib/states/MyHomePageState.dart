@@ -298,7 +298,7 @@ class MyHomePageState extends State<MyHomePage> {
               },
             ),
             // GRAFICAS
-            new RaisedButton(
+            /*new RaisedButton(
               child: new Text('Gráfica'),
               onPressed: () {
                 print('Saltar a graficas');
@@ -308,6 +308,7 @@ class MyHomePageState extends State<MyHomePage> {
                 );
               },
             ),
+            */
           ],
         ),
         Text("Consulta: " + this.queryDate),

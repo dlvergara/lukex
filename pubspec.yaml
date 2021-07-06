@@ -53,6 +53,9 @@ dependencies:
   #Mysql
   mysql1: ^0.17.1
 
+  #WorkManager
+  workmanager: ^0.4.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
