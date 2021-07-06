@@ -23,8 +23,8 @@ class Acomo implements ProviderInterface {
       //'referer': 'https://www.cocosylucasbcp.com/',
       //'app-code': 'MY',
     });
-    print("A como status: " + response.statusCode.toString());
-    print("A como response: " + response.body);
+    //print("A como status: " + response.statusCode.toString());
+    //print("A como response: " + response.body);
 
     if (response.statusCode == 200) {
       var parsed = json.decode(response.body);

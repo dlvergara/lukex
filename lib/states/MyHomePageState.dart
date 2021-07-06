@@ -9,9 +9,22 @@ import 'package:lukex/Providers/TuCambista.dart';
 import 'package:lukex/Util/Database.dart';
 import 'package:lukex/pages/GraphPage.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:workmanager/workmanager.dart';
 
 import '../ProviderInterface.dart';
 import '../pages/MyHomePage.dart';
+
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) {
+    print("Native called background task: $task");
+
+    DateTime now = new DateTime.now();
+    DateTime date = new DateTime(now.year, now.month, now.day);
+    print(date.toString());
+
+    return Future.value(true);
+  });
+}
 
 class MyHomePageState extends State<MyHomePage> {
   double minusConstant = 0.004;
@@ -227,6 +240,42 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
+    DateTime now = new DateTime.now();
+    DateTime date = new DateTime(
+        now.year, now.month, now.day, now.hour, now.minute, now.second);
+    print(date.toString());
+    try {
+      Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+      /*
+    Workmanager().registerOneOffTask(
+      "1", // Ignored on iOS
+      "simpleTaskKey", // Ignored on iOS
+      initialDelay: Duration(seconds: 3),
+      constraints: Constraints(
+          networkType: NetworkType.connected,
+          requiresBatteryNotLow: true,
+          requiresCharging: true,
+          requiresDeviceIdle: true,
+          requiresStorageNotLow: true
+      )
+      existingWorkPolicy: ExistingWorkPolicy.append
+      //inputData: ... // fully supported
+    ); //Android only (see below)
+    */
+
+      Workmanager().registerPeriodicTask(
+        "3",
+        'periodicTask',
+        frequency: Duration(minutes: 15),
+        //initialDelay: Duration(seconds: 10),
+      );
+    } catch (e) {
+      print("------------- Exception -------------");
+      print(e);
+      print("------------- /Exception -------------");
+    }
+
     this.getValues().then((value) {
       setState(() {});
     });
@@ -298,17 +347,19 @@ class MyHomePageState extends State<MyHomePage> {
               },
             ),
             // GRAFICAS
-            /*new RaisedButton(
+            /*
+            new RaisedButton(
               child: new Text('Gráfica'),
               onPressed: () {
                 print('Saltar a graficas');
+                /*
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => this.graphPage),
                 );
+                */
               },
-            ),
-            */
+            ),*/
           ],
         ),
         Text("Consulta: " + this.queryDate),
