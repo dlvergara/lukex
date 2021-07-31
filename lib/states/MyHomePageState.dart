@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:lukex/Providers/Acomo.dart';
 import 'package:lukex/Providers/CambistaInca.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
@@ -9,11 +10,13 @@ import 'package:lukex/Providers/TuCambista.dart';
 import 'package:lukex/Util/Database.dart';
 import 'package:lukex/pages/GraphPage.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:workmanager/workmanager.dart';
+
+//import 'package:workmanager/workmanager.dart';
 
 import '../ProviderInterface.dart';
 import '../pages/MyHomePage.dart';
 
+/*
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
     print("Native called background task: $task");
@@ -25,18 +28,31 @@ void callbackDispatcher() {
     return Future.value(true);
   });
 }
-
+*/
 class MyHomePageState extends State<MyHomePage> {
   double minusConstant = 0.004;
   double minValue = 10.0;
   var cards = [];
   var dataCollection = [];
   var queryDate = "";
+  final LocalStorage storage = new LocalStorage('lukex.json');
 
   GraphPage graphPage = new GraphPage(
     title: 'Lukex - Gráfica',
     animate: true,
   );
+
+  _saveToStorage(value) {
+    storage.setItem('lukex_min_val_usd', value);
+  }
+
+  _clearStorage() async {
+    await storage.clear();
+  }
+
+  _getFromStorage() {
+    return storage.getItem('lukex_min_val_usd');
+  }
 
   /**
    * Send to database
@@ -48,6 +64,20 @@ class MyHomePageState extends State<MyHomePage> {
         "INSERT INTO lukex.exchange VALUES (null, NOW(), ?, ?, '--')";
     await conn.query(insertQuery, ["lukex_" + provider, data]);
   }
+
+  /*
+  static void callbackStaticFunction() {
+    Workmanager().executeTask((task, inputData) {
+      print("Native called background task: $task");
+
+      DateTime now = new DateTime.now();
+      DateTime date = new DateTime(now.year, now.month, now.day);
+      print(date.toString());
+
+      return Future.value(true);
+    });
+  }
+  */
 
   //Refresh
   void _incrementCounter() {
@@ -62,6 +92,7 @@ class MyHomePageState extends State<MyHomePage> {
       this.minValue = value;
       res = true;
     }
+    _saveToStorage(this.minValue);
     return res;
   }
 
@@ -79,7 +110,7 @@ class MyHomePageState extends State<MyHomePage> {
       if (founded) {
         fontColor = Colors.green;
       }
-      double minus = exchangeValue - minusConstant;
+      //double minus = exchangeValue - minusConstant;
       children = <Widget>[
         ListTile(
           enabled: true,
@@ -235,6 +266,21 @@ class MyHomePageState extends State<MyHomePage> {
 
       this.cards.add([provider.name, card]);
     });
+
+    double previousValue = _getFromStorage();
+
+    if (previousValue != null) {
+      Widget card = Card(
+          child: ListTile(
+        enabled: true,
+        leading: FlutterLogo(size: 72.0),
+        title: Text("Valor anterior"),
+        subtitle: Text(previousValue.toString()),
+        trailing: Icon(Icons.more_vert),
+        isThreeLine: true,
+      ));
+      this.cards.add(['previous', card]);
+    }
   }
 
   @override
@@ -246,30 +292,32 @@ class MyHomePageState extends State<MyHomePage> {
         now.year, now.month, now.day, now.hour, now.minute, now.second);
     print(date.toString());
     try {
-      Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+      //Workmanager().initialize(callbackStaticFunction, isInDebugMode: true);
       /*
-    Workmanager().registerOneOffTask(
-      "1", // Ignored on iOS
-      "simpleTaskKey", // Ignored on iOS
-      initialDelay: Duration(seconds: 3),
-      constraints: Constraints(
-          networkType: NetworkType.connected,
-          requiresBatteryNotLow: true,
-          requiresCharging: true,
-          requiresDeviceIdle: true,
-          requiresStorageNotLow: true
-      )
-      existingWorkPolicy: ExistingWorkPolicy.append
-      //inputData: ... // fully supported
-    ); //Android only (see below)
-    */
+      Workmanager().registerOneOffTask(
+        "1", // Ignored on iOS
+        "simpleTaskKey", // Ignored on iOS
+        initialDelay: Duration(seconds: 3),
+        constraints: Constraints(
+            networkType: NetworkType.connected,
+            requiresBatteryNotLow: true,
+            requiresCharging: true,
+            requiresDeviceIdle: true,
+            requiresStorageNotLow: true
+        )
+        existingWorkPolicy: ExistingWorkPolicy.append
+        //inputData: ... // fully supported
+      ); //Android only (see below)
+      */
 
+      /*
       Workmanager().registerPeriodicTask(
         "3",
         'periodicTask',
-        frequency: Duration(minutes: 15),
+        frequency: Duration(minutes: 5),
         //initialDelay: Duration(seconds: 10),
       );
+       */
     } catch (e) {
       print("------------- Exception -------------");
       print(e);
@@ -344,6 +392,7 @@ class MyHomePageState extends State<MyHomePage> {
               child: new Text('Ordenar'),
               onPressed: () {
                 setState(() {});
+                _clearStorage();
               },
             ),
             // GRAFICAS
