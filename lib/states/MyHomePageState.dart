@@ -47,7 +47,13 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   _clearStorage() async {
-    await storage.clear();
+    try {
+      await storage.clear();
+    } catch (e) {
+      print("------------- Exception -------------");
+      print(e);
+      print("------------- /Exception -------------");
+    }
   }
 
   _getFromStorage() {

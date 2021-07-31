@@ -57,7 +57,8 @@ dependencies:
   #workmanager: ^0.4.1
 
   #Local storage
-  localstorage: ^4.0.0+1
+  #localstorage: ^4.0.0+1
+  localstorage: 3.0.1+4
 
 dev_dependencies:
   flutter_test:
