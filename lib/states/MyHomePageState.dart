@@ -88,6 +88,7 @@ class MyHomePageState extends State<MyHomePage> {
   //Refresh
   void _incrementCounter() {
     this.getValues().then((value) {
+      _saveToStorage(this.minValue);
       setState(() {});
     });
   }
@@ -98,7 +99,6 @@ class MyHomePageState extends State<MyHomePage> {
       this.minValue = value;
       res = true;
     }
-    _saveToStorage(this.minValue);
     return res;
   }
 
