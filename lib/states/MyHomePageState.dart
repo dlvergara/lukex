@@ -7,6 +7,7 @@ import 'package:lukex/Providers/Acomo.dart';
 import 'package:lukex/Providers/CambistaInca.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
+import 'package:lukex/Providers/MidPointFx.dart';
 import 'package:lukex/Providers/Tkambio.dart';
 import 'package:lukex/Providers/TuCambista.dart';
 import 'package:lukex/Util/Database.dart';
@@ -18,19 +19,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../ProviderInterface.dart';
 import '../pages/MyHomePage.dart';
 
-/*
-void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) {
-    print("Native called background task: $task");
-
-    DateTime now = new DateTime.now();
-    DateTime date = new DateTime(now.year, now.month, now.day);
-    print(date.toString());
-
-    return Future.value(true);
-  });
-}
-*/
 class MyHomePageState extends State<MyHomePage> {
   double minusConstant = 0.004;
   double minValue = 10.0;
@@ -225,6 +213,7 @@ class MyHomePageState extends State<MyHomePage> {
       print("Providers found -> " + results.length.toString());
       for (var row in results) {
         String name = row['class_name'];
+        print('Provider from db -> ' + name);
         switch (name) {
           case 'TuCambista':
             providerList.add(new TuCambista());
@@ -244,6 +233,9 @@ class MyHomePageState extends State<MyHomePage> {
           case 'CocosYLucas':
             providerList.add(new CocosYLucas());
             break;
+          case 'MidPointFx':
+            providerList.add(new MidPointFx());
+            break;
         }
       }
     } catch (e) {
@@ -262,6 +254,7 @@ class MyHomePageState extends State<MyHomePage> {
     List<dynamic> providerCollection = await this.GetProviders();
 
     providerCollection.forEach((provider) {
+      print("Provider to build: " + provider.name);
       Widget card = Card(
         child: FutureBuilder<String>(
           future: provider.fetchData(),
@@ -306,17 +299,18 @@ class MyHomePageState extends State<MyHomePage> {
         print('every 10 minutes');
         this.getValues().then((value) {
           setState(() {});
+
+          double previousValue = _getFromStorage();
+          print(previousValue.toString());
+          print(this.minValue);
+          if (previousValue > 0 && this.minValue < previousValue) {
+            //ALERT!
+            _saveToStorage(this.minValue);
+            this.audioPlugin.play(alarmSound);
+          } else {
+            _saveToStorage(this.minValue);
+          }
         });
-        double previousValue = _getFromStorage();
-        print(previousValue.toString());
-        print(this.minValue);
-        if (previousValue > 0 && this.minValue < previousValue) {
-          //ALERT!
-          _saveToStorage(this.minValue);
-          this.audioPlugin.play(alarmSound);
-        } else {
-          _saveToStorage(this.minValue);
-        }
       });
     } catch (e) {
       print("------------- Exception -------------");
