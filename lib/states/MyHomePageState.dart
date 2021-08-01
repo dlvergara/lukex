@@ -8,6 +8,7 @@ import 'package:lukex/Providers/CambistaInca.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
 import 'package:lukex/Providers/MidPointFx.dart';
+import 'package:lukex/Providers/Securex.dart';
 import 'package:lukex/Providers/Tkambio.dart';
 import 'package:lukex/Providers/TuCambista.dart';
 import 'package:lukex/Util/Database.dart';
@@ -235,6 +236,9 @@ class MyHomePageState extends State<MyHomePage> {
             break;
           case 'MidPointFx':
             providerList.add(new MidPointFx());
+            break;
+          case 'Securex':
+            providerList.add(new Securex());
             break;
         }
       }
