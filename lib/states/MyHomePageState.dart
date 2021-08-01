@@ -1,3 +1,5 @@
+import 'package:audioplayer/audioplayer.dart';
+import 'package:cron/cron.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
@@ -32,10 +34,14 @@ void callbackDispatcher() {
 class MyHomePageState extends State<MyHomePage> {
   double minusConstant = 0.004;
   double minValue = 10.0;
+  final alarmSound = 'http://olimpix.me/bicycle-bell-ding-sound-effect.mp3';
   var cards = [];
   var dataCollection = [];
   var queryDate = "";
+  final cron = Cron();
+  String localFilePath;
   final LocalStorage storage = new LocalStorage('lukex.json');
+  AudioPlayer audioPlugin = AudioPlayer();
 
   GraphPage graphPage = new GraphPage(
     title: 'Lukex - Gráfica',
@@ -57,7 +63,11 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   _getFromStorage() {
-    return storage.getItem('lukex_min_val_usd');
+    double variable = storage.getItem('lukex_min_val_usd');
+    if (variable == null) {
+      variable = 0;
+    }
+    return variable;
   }
 
   /**
@@ -102,8 +112,7 @@ class MyHomePageState extends State<MyHomePage> {
     return res;
   }
 
-  List<Widget> getChildren(
-      AsyncSnapshot<String> snapshot, ProviderInterface provider) {
+  List<Widget> getChildren(AsyncSnapshot<String> snapshot, ProviderInterface provider) {
     List<Widget> children;
     double exchangeValue = 0.0;
     _sendToStorage(provider.name, snapshot.data);
@@ -191,8 +200,7 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  List<Widget> buildChildren(
-      AsyncSnapshot<String> snapshot, ProviderInterface provider) {
+  List<Widget> buildChildren(AsyncSnapshot<String> snapshot, ProviderInterface provider) {
     List<Widget> children;
     if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
       children = getChildren(snapshot, provider);
@@ -211,8 +219,8 @@ class MyHomePageState extends State<MyHomePage> {
       var conn = await db.getConnection();
       var results = await conn.query(
           'SELECT * FROM lukex.providers pro '
-          'WHERE pro.status = 1 '
-          'ORDER BY pro.sort',
+              'WHERE pro.status = 1 '
+              'ORDER BY pro.sort',
           []);
       print("Providers found -> " + results.length.toString());
       for (var row in results) {
@@ -275,7 +283,7 @@ class MyHomePageState extends State<MyHomePage> {
 
     double previousValue = _getFromStorage();
 
-    if (previousValue != null) {
+    if (previousValue > 0) {
       Widget card = Card(
           child: ListTile(
         enabled: true,
@@ -293,37 +301,23 @@ class MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    DateTime now = new DateTime.now();
-    DateTime date = new DateTime(
-        now.year, now.month, now.day, now.hour, now.minute, now.second);
-    print(date.toString());
     try {
-      //Workmanager().initialize(callbackStaticFunction, isInDebugMode: true);
-      /*
-      Workmanager().registerOneOffTask(
-        "1", // Ignored on iOS
-        "simpleTaskKey", // Ignored on iOS
-        initialDelay: Duration(seconds: 3),
-        constraints: Constraints(
-            networkType: NetworkType.connected,
-            requiresBatteryNotLow: true,
-            requiresCharging: true,
-            requiresDeviceIdle: true,
-            requiresStorageNotLow: true
-        )
-        existingWorkPolicy: ExistingWorkPolicy.append
-        //inputData: ... // fully supported
-      ); //Android only (see below)
-      */
-
-      /*
-      Workmanager().registerPeriodicTask(
-        "3",
-        'periodicTask',
-        frequency: Duration(minutes: 5),
-        //initialDelay: Duration(seconds: 10),
-      );
-       */
+      cron.schedule(Schedule.parse('*/10 * * * *'), () async {
+        print('every 10 minutes');
+        this.getValues().then((value) {
+          setState(() {});
+        });
+        double previousValue = _getFromStorage();
+        print(previousValue.toString());
+        print(this.minValue);
+        if (previousValue > 0 && this.minValue < previousValue) {
+          //ALERT!
+          _saveToStorage(this.minValue);
+          this.audioPlugin.play(alarmSound);
+        } else {
+          _saveToStorage(this.minValue);
+        }
+      });
     } catch (e) {
       print("------------- Exception -------------");
       print(e);
