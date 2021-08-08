@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:lukex/MainProvider.dart';
-import 'package:lukex/Util/Database.dart';
 import 'package:lukex/Util/ProviderGenerator.dart';
+import 'package:lukex/Util/Util.dart';
 import 'package:lukex/pages/GraphPage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,6 +24,7 @@ class MyHomePageState extends State<MyHomePage> {
   final LocalStorage storage = new LocalStorage('lukex.json');
   AudioPlayer audioPlugin = AudioPlayer();
   ProviderGenerator gen = new ProviderGenerator();
+  Util util = new Util();
 
   GraphPage graphPage = new GraphPage(
     title: 'Lukex - Gráfica',
@@ -50,17 +51,6 @@ class MyHomePageState extends State<MyHomePage> {
       variable = 0;
     }
     return variable;
-  }
-
-  /**
-   * Send to database
-   */
-  Future<void> _sendToStorage(String provider, String data) async {
-    var db = new Database();
-    var conn = await db.getConnection();
-    var insertQuery =
-        "INSERT INTO lukex.exchange VALUES (null, NOW(), ?, ?, '--')";
-    await conn.query(insertQuery, ["lukex_" + provider, data]);
   }
 
   /*
@@ -98,7 +88,7 @@ class MyHomePageState extends State<MyHomePage> {
       AsyncSnapshot<String> snapshot, MainProvider provider) {
     List<Widget> children;
     double exchangeValue = 0.0;
-    _sendToStorage(provider.name, snapshot.data);
+    util.sendToStorage(provider.name, snapshot.data);
     Color fontColor = Colors.grey;
 
     Widget logo = gen.getLogo(provider);

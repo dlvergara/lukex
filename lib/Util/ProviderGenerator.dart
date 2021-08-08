@@ -28,7 +28,7 @@ class ProviderGenerator {
       print("Providers found -> " + results.length.toString());
       for (var row in results) {
         String name = row['class_name'];
-        print('Provider from db -> ' + name);
+        //print('Provider from db -> ' + name);
         MainProvider provider = null;
         switch (name) {
           case 'TuCambista':

@@ -20,7 +20,7 @@ class MidPointFx extends MainProvider implements ProviderInterface {
       },
     );
 
-    print(response.statusCode.toString());
+    //print(response.statusCode.toString());
     //print(response.body);
 
     var document = parse(response.body);
