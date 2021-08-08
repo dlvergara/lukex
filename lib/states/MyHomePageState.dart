@@ -3,21 +3,13 @@ import 'package:cron/cron.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:lukex/Providers/Acomo.dart';
-import 'package:lukex/Providers/CambistaInca.dart';
-import 'package:lukex/Providers/CocosYLucas.dart';
-import 'package:lukex/Providers/JetPeru.dart';
-import 'package:lukex/Providers/MidPointFx.dart';
-import 'package:lukex/Providers/Securex.dart';
-import 'package:lukex/Providers/Tkambio.dart';
-import 'package:lukex/Providers/TuCambista.dart';
+import 'package:lukex/MainProvider.dart';
 import 'package:lukex/Util/Database.dart';
+import 'package:lukex/Util/ProviderGenerator.dart';
 import 'package:lukex/pages/GraphPage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 //import 'package:workmanager/workmanager.dart';
-
-import '../ProviderInterface.dart';
 import '../pages/MyHomePage.dart';
 
 class MyHomePageState extends State<MyHomePage> {
@@ -31,6 +23,7 @@ class MyHomePageState extends State<MyHomePage> {
   String localFilePath;
   final LocalStorage storage = new LocalStorage('lukex.json');
   AudioPlayer audioPlugin = AudioPlayer();
+  ProviderGenerator gen = new ProviderGenerator();
 
   GraphPage graphPage = new GraphPage(
     title: 'Lukex - Gráfica',
@@ -101,11 +94,15 @@ class MyHomePageState extends State<MyHomePage> {
     return res;
   }
 
-  List<Widget> getChildren(AsyncSnapshot<String> snapshot, ProviderInterface provider) {
+  List<Widget> getChildren(
+      AsyncSnapshot<String> snapshot, MainProvider provider) {
     List<Widget> children;
     double exchangeValue = 0.0;
     _sendToStorage(provider.name, snapshot.data);
     Color fontColor = Colors.grey;
+
+    Widget logo = gen.getLogo(provider);
+
     try {
       exchangeValue = double.parse(snapshot.data);
       this.dataCollection.add([provider.name, exchangeValue]);
@@ -118,7 +115,7 @@ class MyHomePageState extends State<MyHomePage> {
       children = <Widget>[
         ListTile(
           enabled: true,
-          leading: FlutterLogo(size: 72.0),
+          leading: logo,
           title: Text(provider.name),
           subtitle: Text(
             '${snapshot.data}', // / ${minus}
@@ -137,7 +134,7 @@ class MyHomePageState extends State<MyHomePage> {
       children = <Widget>[
         ListTile(
           enabled: true,
-          leading: FlutterLogo(size: 72.0),
+          leading: logo,
           title: Text(provider.name),
           subtitle: Text('${snapshot.data}'),
           trailing: Icon(Icons.more_vert),
@@ -189,7 +186,8 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  List<Widget> buildChildren(AsyncSnapshot<String> snapshot, ProviderInterface provider) {
+  List<Widget> buildChildren(
+      AsyncSnapshot<String> snapshot, MainProvider provider) {
     List<Widget> children;
     if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
       children = getChildren(snapshot, provider);
@@ -201,64 +199,16 @@ class MyHomePageState extends State<MyHomePage> {
     return children;
   }
 
-  Future<List> GetProviders() async {
-    var providerList = [];
-    try {
-      var db = new Database();
-      var conn = await db.getConnection();
-      var results = await conn.query(
-          'SELECT * FROM lukex.providers pro '
-              'WHERE pro.status = 1 '
-              'ORDER BY pro.sort',
-          []);
-      print("Providers found -> " + results.length.toString());
-      for (var row in results) {
-        String name = row['class_name'];
-        print('Provider from db -> ' + name);
-        switch (name) {
-          case 'TuCambista':
-            providerList.add(new TuCambista());
-            break;
-          case 'JetPeru':
-            providerList.add(new JetPeru());
-            break;
-          case 'CambistaInca':
-            providerList.add(new CambistaInca());
-            break;
-          case 'Acomo':
-            providerList.add(new Acomo());
-            break;
-          case 'Tkambio':
-            providerList.add(new Tkambio());
-            break;
-          case 'CocosYLucas':
-            providerList.add(new CocosYLucas());
-            break;
-          case 'MidPointFx':
-            providerList.add(new MidPointFx());
-            break;
-          case 'Securex':
-            providerList.add(new Securex());
-            break;
-        }
-      }
-    } catch (e) {
-      print('Printing out the message: $e');
-    }
-
-    return providerList;
-  }
-
   // Get values
   Future<void> getValues() async {
     this.cards = [];
     this.dataCollection = [];
     this.queryDate = new DateTime.now().toString();
 
-    List<dynamic> providerCollection = await this.GetProviders();
+    List<dynamic> providerCollection = await gen.GetProviders();
 
     providerCollection.forEach((provider) {
-      print("Provider to build: " + provider.name);
+      //print("Provider to build: " + provider.name);
       Widget card = Card(
         child: FutureBuilder<String>(
           future: provider.fetchData(),
@@ -355,13 +305,8 @@ class MyHomePageState extends State<MyHomePage> {
         }
       });
 
-      //print("cantidad 2: " + this.dataCollection.length.toString());
-
-      //print(finalCards.length);
-      //print('fin ordernar');
       this.dataCollection = [];
     }
-    //print(this.dataCollection);
 
     return Scaffold(
       appBar: AppBar(

@@ -66,6 +66,12 @@ dependencies:
   #Cron
   cron: ^0.3.1
 
+  #Flutter SVG
+  flutter_svg: ^0.22.0
+
+  #Path
+  path: ^1.8.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

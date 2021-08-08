@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:http/http.dart';
+import 'package:lukex/MainProvider.dart';
 
 import '../ProviderInterface.dart';
 
-class CocosYLucas implements ProviderInterface {
+class CocosYLucas extends MainProvider implements ProviderInterface {
   String name = "CocosyLucas";
   String publicUrl = 'https://www.cocosylucasbcp.com/';
   String url = 'https://www.cocosylucasbcp.com/poly/currency-exchanges';

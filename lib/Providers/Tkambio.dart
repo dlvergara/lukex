@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:lukex/MainProvider.dart';
 
 import '../ProviderInterface.dart';
 
-class Tkambio implements ProviderInterface {
+class Tkambio extends MainProvider implements ProviderInterface {
   String name = "TKambio";
   String url = 'https://tkambio.com/wp-admin/admin-ajax.php';
   String publicUrl = 'https://tkambio.com';

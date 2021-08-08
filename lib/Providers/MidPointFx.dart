@@ -1,9 +1,10 @@
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart';
+import 'package:lukex/MainProvider.dart';
 
 import '../ProviderInterface.dart';
 
-class MidPointFx implements ProviderInterface {
+class MidPointFx extends MainProvider implements ProviderInterface {
   String name = "MidPointFx";
   String url = 'https://www.midpointfx.com/';
   String publicUrl = 'https://www.midpointfx.com/';

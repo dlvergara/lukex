@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:lukex/MainProvider.dart';
 
 import '../ProviderInterface.dart';
 
-class TuCambista implements ProviderInterface {
+class TuCambista extends MainProvider implements ProviderInterface {
   String name = "TuCambista";
   String url = 'https://app.tucambista.pe/';
   String publicUrl = 'https://www.tucambista.pe/';

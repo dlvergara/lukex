@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:lukex/MainProvider.dart';
 
 import '../ProviderInterface.dart';
 
-class CambistaInca implements ProviderInterface {
+class CambistaInca extends MainProvider implements ProviderInterface {
   String name = "CambistaInca";
   String url = 'https://cambistainka.com';
   String publicUrl = 'https://cambistainka.com';

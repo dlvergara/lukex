@@ -3,9 +3,10 @@ import 'dart:math';
 
 import 'package:http/http.dart';
 
+import '../MainProvider.dart';
 import '../ProviderInterface.dart';
 
-class JetPeru implements ProviderInterface {
+class JetPeru extends MainProvider implements ProviderInterface {
   String name = "JetPeru";
   String url = 'http://www.jetperu.com.pe/';
   String publicUrl = 'http://www.jetperu.com.pe';

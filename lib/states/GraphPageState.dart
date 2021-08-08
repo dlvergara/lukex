@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kafka/kafka.dart';
 import 'package:logging/logging.dart';
-import 'package:lukex/ProviderInterface.dart';
+import 'package:lukex/MainProvider.dart';
 import 'package:lukex/Providers/CambistaInca.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
@@ -20,14 +20,14 @@ class GraphPageState extends State<GraphPage> {
   Map<String, num> _measures;
 
   ///Providers
-  List<ProviderInterface> getProviders() {
+  List<MainProvider> getProviders() {
     CocosYLucas cocosyLucasProvider = new CocosYLucas();
     Tkambio tkambioProvider = new Tkambio();
     JetPeru jetPeruProvider = new JetPeru();
     CambistaInca cambistaProvider = new CambistaInca();
     TuCambista tuCambistaProvider = new TuCambista();
 
-    List<ProviderInterface> list = [
+    List<MainProvider> list = [
       cocosyLucasProvider,
       tkambioProvider,
       jetPeruProvider,
@@ -75,7 +75,7 @@ class GraphPageState extends State<GraphPage> {
 
   ///Build serie all providers
   Future<List<charts.Series<LinearData, int>>> buildSeriesData() async {
-    List<ProviderInterface> providers = this.getProviders();
+    List<MainProvider> providers = this.getProviders();
     List<charts.Series<LinearData, int>> seriesList = [];
 
     var db = new Database();

@@ -1,9 +1,10 @@
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart';
+import 'package:lukex/MainProvider.dart';
 
 import '../ProviderInterface.dart';
 
-class Securex implements ProviderInterface {
+class Securex extends MainProvider implements ProviderInterface {
   String name = "Securex";
   String url = 'https://securex.pe/';
   String publicUrl = 'https://securex.pe/';

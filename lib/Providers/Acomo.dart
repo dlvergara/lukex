@@ -3,9 +3,10 @@ import 'dart:math';
 
 import 'package:http/http.dart';
 
+import '../MainProvider.dart';
 import '../ProviderInterface.dart';
 
-class Acomo implements ProviderInterface {
+class Acomo extends MainProvider implements ProviderInterface {
   String name = "AComo";
   String publicUrl = 'https://www.acomo.com.pe/';
   String url = 'https://www.acomo.com.pe/api/current_change';
