@@ -299,7 +299,7 @@ class MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     try {
-      cron.schedule(Schedule.parse('*/10 * * * *'), () async {
+      cron.schedule(Schedule.parse('*/15 * * * *'), () async {
         print('every 10 minutes');
         this.getValues().then((value) {
           setState(() {});
@@ -312,7 +312,9 @@ class MyHomePageState extends State<MyHomePage> {
             _saveToStorage(this.minValue);
             this.audioPlugin.play(alarmSound);
           } else {
-            _saveToStorage(this.minValue);
+            if (previousValue == 0) {
+              _saveToStorage(this.minValue);
+            }
           }
         });
       });
