@@ -2,7 +2,6 @@ import 'package:audioplayer/audioplayer.dart';
 import 'package:cron/cron.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:lukex/MainProvider.dart';
 import 'package:lukex/Util/ProviderGenerator.dart';
 import 'package:lukex/Util/Util.dart';
@@ -21,7 +20,6 @@ class MyHomePageState extends State<MyHomePage> {
   var queryDate = "";
   final cron = Cron();
   String localFilePath;
-  final LocalStorage storage = new LocalStorage('lukex.json');
   AudioPlayer audioPlugin = AudioPlayer();
   ProviderGenerator gen = new ProviderGenerator();
   Util util = new Util();
@@ -30,28 +28,6 @@ class MyHomePageState extends State<MyHomePage> {
     title: 'Lukex - Gráfica',
     animate: true,
   );
-
-  _saveToStorage(value) {
-    storage.setItem('lukex_min_val_usd', value);
-  }
-
-  _clearStorage() async {
-    try {
-      await storage.clear();
-    } catch (e) {
-      print("------------- Exception -------------");
-      print(e);
-      print("------------- /Exception -------------");
-    }
-  }
-
-  _getFromStorage() {
-    double variable = storage.getItem('lukex_min_val_usd');
-    if (variable == null) {
-      variable = 0;
-    }
-    return variable;
-  }
 
   /*
   static void callbackStaticFunction() {
@@ -70,7 +46,7 @@ class MyHomePageState extends State<MyHomePage> {
   //Refresh
   void _incrementCounter() {
     this.getValues().then((value) {
-      _saveToStorage(this.minValue);
+      util.saveToLocalStorage(this.minValue);
       setState(() {});
     });
   }
@@ -218,7 +194,7 @@ class MyHomePageState extends State<MyHomePage> {
       this.cards.add([provider.name, card]);
     });
 
-    double previousValue = _getFromStorage();
+    double previousValue = util.getFromLocalStorage();
 
     if (previousValue > 0) {
       Widget card = Card(
@@ -244,17 +220,13 @@ class MyHomePageState extends State<MyHomePage> {
         this.getValues().then((value) {
           setState(() {});
 
-          double previousValue = _getFromStorage();
+          double previousValue = util.getFromLocalStorage();
           print(previousValue.toString());
           print(this.minValue);
           if (previousValue > 0 && this.minValue < previousValue) {
             //ALERT!
-            _saveToStorage(this.minValue);
+            util.saveToLocalStorage(this.minValue);
             this.audioPlugin.play(alarmSound);
-          } else {
-            if (previousValue == 0) {
-              _saveToStorage(this.minValue);
-            }
           }
         });
       });
@@ -327,7 +299,7 @@ class MyHomePageState extends State<MyHomePage> {
               child: new Text('Ordenar'),
               onPressed: () {
                 setState(() {});
-                _clearStorage();
+                util.clearLocalStorage();
               },
             ),
             // GRAFICAS
