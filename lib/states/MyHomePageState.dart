@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:lukex/MainProvider.dart';
 import 'package:lukex/Util/ProviderGenerator.dart';
 import 'package:lukex/Util/Util.dart';
-import 'package:lukex/pages/GraphPage.dart';
+import 'package:lukex/pages/ConfigReferenceValue.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 //import 'package:workmanager/workmanager.dart';
@@ -24,7 +24,7 @@ class MyHomePageState extends State<MyHomePage> {
   ProviderGenerator gen = new ProviderGenerator();
   Util util = new Util();
 
-  GraphPage graphPage = new GraphPage(
+  ConfigReferenceValuePage configReference = new ConfigReferenceValuePage(
     title: 'Lukex - Gráfica',
     animate: true,
   );
@@ -274,34 +274,40 @@ class MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         centerTitle: false,
         title: Text(widget.title),
-        /*
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.settings),
-            /*
-            onPressed: () {
-              print('Saltar a config');
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => btConfig),
-              );
-            },
-            */
-          ),
-        ]*/
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Lukex - Configuración'),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+            ),
+            ListTile(
+              title: Text('Valor de referencia'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => configReference),
+                );
+              },
+            ),
+          ],
+        ),
       ),
       body: Column(children: <Widget>[
         ButtonBar(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             //ORDERNAR
-            new RaisedButton(
-              child: new Text('Ordenar'),
-              onPressed: () {
-                setState(() {});
-                util.clearLocalStorage();
-              },
-            ),
+            new IconButton(
+                onPressed: () {
+                  setState(() {});
+                  util.clearLocalStorage();
+                },
+                icon: Icon(Icons.sort_rounded))
             // GRAFICAS
             /*
             new RaisedButton(
