@@ -305,7 +305,6 @@ class MyHomePageState extends State<MyHomePage> {
             new IconButton(
                 onPressed: () {
                   setState(() {});
-                  util.clearLocalStorage();
                 },
                 icon: Icon(Icons.sort_rounded))
             // GRAFICAS
