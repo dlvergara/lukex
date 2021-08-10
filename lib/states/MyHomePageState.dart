@@ -46,7 +46,7 @@ class MyHomePageState extends State<MyHomePage> {
   //Refresh
   void _incrementCounter() {
     this.getValues().then((value) {
-      util.saveToLocalStorage(this.minValue);
+      //util.saveToLocalStorage(this.minValue);
       setState(() {});
     });
   }
@@ -71,7 +71,10 @@ class MyHomePageState extends State<MyHomePage> {
 
     try {
       exchangeValue = double.parse(snapshot.data);
-      this.dataCollection.add([provider.name, exchangeValue]);
+      print(this.dataCollection.contains([provider.name, exchangeValue]));
+      if (!this.dataCollection.contains([provider.name, exchangeValue])) {
+        this.dataCollection.add([provider.name, exchangeValue]);
+      }
 
       bool founded = findMinValue(exchangeValue);
       if (founded) {
@@ -193,21 +196,6 @@ class MyHomePageState extends State<MyHomePage> {
 
       this.cards.add([provider.name, card]);
     });
-
-    double previousValue = util.getFromLocalStorage();
-
-    if (previousValue > 0) {
-      Widget card = Card(
-          child: ListTile(
-        enabled: true,
-        leading: FlutterLogo(size: 72.0),
-        title: Text("Valor anterior"),
-        subtitle: Text(previousValue.toString()),
-        trailing: Icon(Icons.more_vert),
-        isThreeLine: true,
-      ));
-      this.cards.add(['previous', card]);
-    }
   }
 
   @override
@@ -252,14 +240,20 @@ class MyHomePageState extends State<MyHomePage> {
 
     //print(this.dataCollection);
     if (this.dataCollection.length > 0) {
-      //print("Ordenar!");
+      print("Ordenar!");
+      print(this.dataCollection.length);
+      print(this.cards.length);
+
       finalCards = <Widget>[];
 
-      //print("cantidad 1: " + this.dataCollection.length.toString());
-      this.dataCollection.sort((a, b) => a[1].compareTo(b[1]));
+      print("cantidad 1: " + this.dataCollection.length.toString());
+      //this.dataCollection.sort((a, b) => a[1].compareTo(b[1]));
+      print("cantidad 2: " + this.dataCollection.length.toString());
 
       this.dataCollection.forEach((dataElement) {
+        //print(dataElement);
         for (final cardElement in this.cards) {
+          //print(cardElement);
           if (dataElement[0] == cardElement[0]) {
             finalCards.add(cardElement[1]);
             break;
@@ -268,6 +262,12 @@ class MyHomePageState extends State<MyHomePage> {
       });
 
       this.dataCollection = [];
+    }
+
+    String valorRefMessage = '';
+    double previousValue = util.getFromLocalStorage();
+    if (previousValue > 0) {
+      valorRefMessage = "Valor de Ref: " + previousValue.toString();
     }
 
     return Scaffold(
@@ -298,6 +298,7 @@ class MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: Column(children: <Widget>[
+        Text(valorRefMessage),
         ButtonBar(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -306,21 +307,13 @@ class MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   setState(() {});
                 },
-                icon: Icon(Icons.sort_rounded))
-            // GRAFICAS
-            /*
-            new RaisedButton(
-              child: new Text('Gráfica'),
-              onPressed: () {
-                print('Saltar a graficas');
-                /*
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => this.graphPage),
-                );
-                */
-              },
-            ),*/
+                icon: Icon(Icons.sort_rounded)),
+            new IconButton(
+                onPressed: () {
+                  print(this.dataCollection);
+                  setState(() {});
+                },
+                icon: Icon(Icons.ac_unit))
           ],
         ),
         Text("Consulta: " + this.queryDate),

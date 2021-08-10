@@ -55,9 +55,10 @@ class CocosYLucas extends MainProvider implements ProviderInterface {
       var parsed = json.decode(response.body);
       if (parsed.containsKey('currencyExchangeList')) {
         if (parsed['currencyExchangeList'].length > 0) {
+          //print(parsed['currencyExchangeList']);
           var exchanges = parsed['currencyExchangeList'];
           for (final i in exchanges) {
-            if (i['maxUsdPurchase'] == "2499.9999") {
+            if (i['maxUsdPurchase'] == "999.9900") {
               result = i['rateSale'];
               break;
             }
