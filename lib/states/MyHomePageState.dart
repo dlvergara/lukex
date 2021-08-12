@@ -247,7 +247,7 @@ class MyHomePageState extends State<MyHomePage> {
       finalCards = <Widget>[];
 
       print("cantidad 1: " + this.dataCollection.length.toString());
-      //this.dataCollection.sort((a, b) => a[1].compareTo(b[1]));
+      this.dataCollection.sort((a, b) => a[1].compareTo(b[1]));
       print("cantidad 2: " + this.dataCollection.length.toString());
 
       this.dataCollection.forEach((dataElement) {

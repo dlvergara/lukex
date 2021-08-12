@@ -6,6 +6,7 @@ import 'package:lukex/Providers/CambistaInca.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
 import 'package:lukex/Providers/MidPointFx.dart';
+import 'package:lukex/Providers/Roblex.dart';
 import 'package:lukex/Providers/Securex.dart';
 import 'package:lukex/Providers/Tkambio.dart';
 import 'package:lukex/Providers/TuCambista.dart';
@@ -55,7 +56,11 @@ class ProviderGenerator {
           case 'Securex':
             provider = new Securex();
             break;
+          case 'Roblex':
+            provider = new Roblex();
+            break;
         }
+        provider.id = row['id'];
         provider.logo = row['logo'];
         provider.name = row['name'];
 

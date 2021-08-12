@@ -1,8 +1,15 @@
 abstract class MainProvider {
+  int _id;
   String _name;
   String _publicUrl;
   String _url;
   String _logo;
+
+  int get id => _id;
+
+  set id(int value) {
+    _id = value;
+  }
 
   String get name => _name;
 
