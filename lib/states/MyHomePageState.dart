@@ -71,7 +71,7 @@ class MyHomePageState extends State<MyHomePage> {
 
     try {
       exchangeValue = double.parse(snapshot.data);
-      print(this.dataCollection.contains([provider.name, exchangeValue]));
+      //print(this.dataCollection.contains([provider.name, exchangeValue]));
       if (!this.dataCollection.contains([provider.name, exchangeValue])) {
         this.dataCollection.add([provider.name, exchangeValue]);
       }

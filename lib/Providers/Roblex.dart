@@ -21,8 +21,8 @@ class Roblex extends MainProvider implements ProviderInterface {
       },
     );
 
-    print(response.statusCode.toString());
-    print(response.body);
+    //print(response.statusCode.toString());
+    //print(response.body);
 
     Map<String, dynamic> parsed = jsonDecode(response.body);
     resultado = parsed['amountSale'];
