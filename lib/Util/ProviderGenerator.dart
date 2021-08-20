@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lukex/Providers/Acomo.dart';
+import 'package:lukex/Providers/Cambista.dart';
 import 'package:lukex/Providers/CambistaInca.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
 import 'package:lukex/Providers/JetPeru.dart';
@@ -58,6 +59,9 @@ class ProviderGenerator {
             break;
           case 'Roblex':
             provider = new Roblex();
+            break;
+          case 'Cambista':
+            provider = new Cambista();
             break;
         }
         provider.id = row['id'];
