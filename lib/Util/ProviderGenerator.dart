@@ -11,6 +11,7 @@ import 'package:lukex/Providers/Securex.dart';
 import 'package:lukex/Providers/Tkambio.dart';
 import 'package:lukex/Providers/TuCambista.dart';
 import 'package:lukex/Util/Database.dart';
+import 'package:mysql1/mysql1.dart';
 import 'package:path/path.dart' as p;
 
 import '../MainProvider.dart';
@@ -30,47 +31,66 @@ class ProviderGenerator {
       for (var row in results) {
         String name = row['class_name'];
         //print('Provider from db -> ' + name);
-        MainProvider provider = null;
+        MainProvider provider;
         switch (name) {
           case 'TuCambista':
             provider = new TuCambista();
+            setProviderData(provider, row);
+            providerList.add(provider);
             break;
           case 'JetPeru':
             provider = new JetPeru();
+            setProviderData(provider, row);
+            providerList.add(provider);
             break;
           case 'CambistaInca':
             provider = new CambistaInca();
+            setProviderData(provider, row);
+            providerList.add(provider);
             break;
           case 'Acomo':
             provider = new Acomo();
+            setProviderData(provider, row);
+            providerList.add(provider);
             break;
           case 'Tkambio':
             provider = new Tkambio();
+            setProviderData(provider, row);
+            providerList.add(provider);
             break;
           case 'CocosYLucas':
             provider = new CocosYLucas();
+            setProviderData(provider, row);
+            providerList.add(provider);
             break;
           case 'MidPointFx':
             provider = new MidPointFx();
+            setProviderData(provider, row);
+            providerList.add(provider);
             break;
           case 'Securex':
             provider = new Securex();
+            setProviderData(provider, row);
+            providerList.add(provider);
             break;
           case 'Roblex':
             provider = new Roblex();
+            setProviderData(provider, row);
+            providerList.add(provider);
             break;
         }
-        provider.id = row['id'];
-        provider.logo = row['logo'];
-        provider.name = row['name'];
-
-        providerList.add(provider);
       }
     } catch (e) {
       print('Printing out the message: $e');
     }
 
     return providerList;
+  }
+
+  setProviderData(MainProvider provider, ResultRow row) {
+    provider.id = row['id'];
+    provider.logo = row['logo'];
+    provider.name = row['name'];
   }
 
   Widget getLogo(MainProvider provider) {

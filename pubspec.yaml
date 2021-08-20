@@ -18,50 +18,50 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   #HTTP Calls
-  http: ^0.12.0+4
+  http: ^0.13.3
 
   #DOM
-  html: ^0.14.0+3
+  html: ^0.15.0
 
   #Flutter
   flutter:
     sdk: flutter
 
-  #Kafka
-  kafka:
-    git:
-      url: https://github.com/dart-kafka/kafka.git
-      ref: kafka-0.10
+  #Kafka module
+  #kafka:
+  #  git:
+  #    url: https://github.com/dart-kafka/kafka.git
+  #    ref: kafka-0.10
 
   #Date formats
-  intl: ^0.16.1
+  intl: ^0.17.0
 
   #URL launcher
-  url_launcher: ^5.4.11
+  url_launcher: ^6.0.9
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.3
+  cupertino_icons: ^1.0.3
 
   #Audioplayer
-  audioplayer: ^0.8.1
+  #audioplayer: ^0.8.1
 
   #Charts
-  charts_flutter: ^0.9.0
+  charts_flutter: ^0.11.0
 
   #Mysql
-  mysql1: ^0.17.1
+  mysql1: ^0.19.2
 
   #WorkManager
   #workmanager: ^0.4.1
 
   #Local storage
   #localstorage: ^4.0.0+1
-  localstorage: 3.0.1+4
+  localstorage: ^4.0.0+1
 
   #Cron
   cron: ^0.3.1
@@ -71,6 +71,9 @@ dependencies:
 
   #Path
   path: ^1.8.0
+
+  #google_fonts: ^2.0.0
+  google_mobile_ads: ^0.13.0
 
 dev_dependencies:
   flutter_test:

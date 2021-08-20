@@ -1,8 +1,6 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kafka/kafka.dart';
-import 'package:logging/logging.dart';
 import 'package:lukex/MainProvider.dart';
 import 'package:lukex/Providers/CambistaInca.dart';
 import 'package:lukex/Providers/CocosYLucas.dart';
@@ -16,8 +14,8 @@ import '../Util/LinearData.dart';
 
 class GraphPageState extends State<GraphPage> {
   List<charts.Series<LinearData, int>> seriesListGlobal = [];
-  String _time;
-  Map<String, num> _measures;
+  String _time = "";
+  Map<String, num> _measures = [] as Map<String, num>;
 
   ///Providers
   List<MainProvider> getProviders() {
@@ -38,6 +36,7 @@ class GraphPageState extends State<GraphPage> {
   }
 
   void getDataFromKafka(element) async {
+    /*
     List<LinearData> list = [];
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen(print);
@@ -71,6 +70,7 @@ class GraphPageState extends State<GraphPage> {
       //await consumer.commit();
     }
     await session.close();
+    */
   }
 
   ///Build serie all providers
@@ -99,19 +99,22 @@ class GraphPageState extends State<GraphPage> {
         list.add(dataRow);
       }
 
+      /*
       var value = new charts.Series<LinearData, int>(
           id: element.name,
           //colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
           //domainFn: (LinearSales sales, _) => sales.year,
           measureFn: (LinearData sales, _) => sales.sales,
-          data: list,
+          data: list;
           domainFn: (LinearData datum, int index) {
             return index;
-          });
+          }
+          );
+       */
       //..setAttribute(charts.rendererIdKey, 'customArea')
 
       if (list.length > 0) {
-        seriesList.add(value);
+        //seriesList.add(value);
       }
     });
 
@@ -124,7 +127,7 @@ class GraphPageState extends State<GraphPage> {
   _onSelectionChanged(charts.SelectionModel model) {
     final selectedDatum = model.selectedDatum;
 
-    String time;
+    String time = "";
     final measures = <String, num>{};
 
     // We get the model that updated with a list of [SeriesDatum] which is
@@ -135,7 +138,7 @@ class GraphPageState extends State<GraphPage> {
     if (selectedDatum.isNotEmpty) {
       time = selectedDatum.first.datum.year;
       selectedDatum.forEach((charts.SeriesDatum datumPair) {
-        measures[datumPair.series.displayName] = datumPair.datum.sales;
+        //measures[datumPair.series.displayName] = datumPair.datum.sales;
       });
     }
 
@@ -182,23 +185,24 @@ class GraphPageState extends State<GraphPage> {
                       AsyncSnapshot<List<charts.Series<LinearData, int>>>
                           snapshot) {
                     Widget element = Text("Cargando");
-                    print(snapshot.hasData);
-                    print(snapshot.data);
-                    print(snapshot.data.length);
+                        print(snapshot.hasData);
+                        print(snapshot.data);
+                        print(snapshot.data!.length);
 
-                    if (snapshot.hasData && snapshot.data.length > 0) {
-                      snapshot.data.forEach((element) {
-                        seriesListGlobal.add(element);
-                      });
-                    }
+                        if (snapshot.hasData && snapshot.data!.length > 0) {
+                          snapshot.data!.forEach((element) {
+                            seriesListGlobal.add(element);
+                          });
+                        }
 
-                    if (snapshot.connectionState == ConnectionState.done &&
-                        snapshot.hasData) {
-                      element = new charts.LineChart(seriesListGlobal,
-                        animate: widget.animate,
-                        customSeriesRenderers: [
-                          new charts.LineRendererConfig(
-                            includeLine: true,
+                        if (snapshot.connectionState == ConnectionState.done &&
+                            snapshot.hasData) {
+                          element = new charts.LineChart(
+                            seriesListGlobal,
+                            animate: widget.animate,
+                            customSeriesRenderers: [
+                              new charts.LineRendererConfig(
+                                includeLine: true,
                             includePoints: true,
                             customRendererId: 'customArea',
                             includeArea: false,

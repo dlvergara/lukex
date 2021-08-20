@@ -14,7 +14,7 @@ class MidPointFx extends MainProvider implements ProviderInterface {
     String fullUrl = this.url;
 
     Response response = await get(
-      fullUrl,
+        new Uri(path: fullUrl),
       headers: {
         //'Content-type': "application/x-www-form-urlencoded; charset=UTF-8"
       },
@@ -26,7 +26,7 @@ class MidPointFx extends MainProvider implements ProviderInterface {
     var document = parse(response.body);
     //print(document.getElementById("comp-kdc9o3af").outerHtml);
     resultado = document
-        .getElementById("comp-kdc9o3af")
+        .getElementById("comp-kdc9o3af")!
         .getElementsByTagName("span")
         .last
         .text;

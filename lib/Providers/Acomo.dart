@@ -20,7 +20,7 @@ class Acomo extends MainProvider implements ProviderInterface {
   Future<String> fetchData() async {
     String result = "0.0";
 
-    Response response = await get(url, headers: {
+    Response response = await get(new Uri(path: url), headers: {
       //'referer': 'https://www.cocosylucasbcp.com/',
       //'app-code': 'MY',
     });

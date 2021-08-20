@@ -3,8 +3,8 @@ import 'package:lukex/MainProvider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LukexTile extends ListTile {
-  MainProvider _provider;
-  ListTile _tile;
+  late MainProvider _provider;
+  late ListTile _tile;
 
   ListTile get tile => _tile;
 

@@ -6,9 +6,9 @@ import 'package:lukex/Util/Util.dart';
 import 'LukexTile.dart';
 
 class LukexCard extends Card {
-  MainProvider _provider;
-  double _amount;
-  Card _card;
+  late MainProvider _provider;
+  double _amount = 0;
+  late Card _card;
   ProviderGenerator gen = new ProviderGenerator();
   Util util = new Util();
 
@@ -58,11 +58,13 @@ class LukexCard extends Card {
     List<Widget> children;
     double exchangeValue = 0.0;
     Widget logo = gen.getLogo(provider);
+    String data = "";
 
     try {
-      exchangeValue = double.parse(snapshot.data);
+      data = snapshot.data ?? "";
+      exchangeValue = double.parse(data);
       if (exchangeValue >= 0) {
-        util.sendToStorage(provider.name, snapshot.data);
+        util.sendToStorage(provider.name, data);
         this._amount = exchangeValue;
       } else {
         util.sendToStorage(provider.name, "10");
@@ -70,13 +72,11 @@ class LukexCard extends Card {
       }
 
       children = <Widget>[
-        new LukexTile(provider, logo, '${snapshot.data}', Icon(Icons.more_vert))
-            .tile
+        new LukexTile(provider, logo, '${data}', Icon(Icons.more_vert)).tile
       ];
     } on Exception {
       children = <Widget>[
-        new LukexTile(provider, logo, '${snapshot.data}', Icon(Icons.more_vert))
-            .tile
+        new LukexTile(provider, logo, '${data}', Icon(Icons.more_vert)).tile
       ];
     }
 

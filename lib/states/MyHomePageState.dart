@@ -1,11 +1,13 @@
-import 'package:audioplayer/audioplayer.dart';
+//import 'package:audioplayer/audioplayer.dart';
 import 'package:cron/cron.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lukex/Helper/LukexCard.dart';
+import 'package:lukex/Helper/ad_helper.dart';
 import 'package:lukex/Util/ProviderGenerator.dart';
 import 'package:lukex/Util/Util.dart';
 import 'package:lukex/pages/ConfigReferenceValue.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 //import 'package:workmanager/workmanager.dart';
 import '../pages/MyHomePage.dart';
@@ -17,13 +19,20 @@ class MyHomePageState extends State<MyHomePage> {
   var cards = [];
   var queryDate = "";
   final cron = Cron();
-  String localFilePath;
-  AudioPlayer audioPlugin = AudioPlayer();
+  String localFilePath = "";
+
+  //AudioPlayer audioPlugin = AudioPlayer();
   ProviderGenerator gen = new ProviderGenerator();
   Util util = new Util();
 
+  // TODO: Add _bannerAd
+  late BannerAd _bannerAd;
+
+  // TODO: Add _isBannerAdReady
+  bool _isBannerAdReady = false;
+
   ConfigReferenceValuePage configReference = new ConfigReferenceValuePage(
-    title: 'Lukex - Gráfica',
+    title: 'Lukex - Config',
     animate: true,
   );
 
@@ -76,6 +85,29 @@ class MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     try {
+      MobileAds.instance.initialize();
+
+      // TODO: Initialize _bannerAd
+      _bannerAd = BannerAd(
+        adUnitId: AdHelper.bannerAdUnitId,
+        request: AdRequest(),
+        size: AdSize.banner,
+        listener: BannerAdListener(
+          onAdLoaded: (_) {
+            setState(() {
+              _isBannerAdReady = true;
+            });
+          },
+          onAdFailedToLoad: (ad, err) {
+            print('Failed to load a banner ad: ${err.message}');
+            _isBannerAdReady = false;
+            ad.dispose();
+          },
+        ),
+      );
+
+      _bannerAd.load();
+
       cron.schedule(Schedule.parse('*/15 * * * *'), () async {
         print('every 10 minutes');
         this.getValues().then((value) {
@@ -85,9 +117,8 @@ class MyHomePageState extends State<MyHomePage> {
           print(previousValue.toString());
           print(this.minValue);
           if (previousValue > 0 && this.minValue < previousValue) {
-            //ALERT!
             util.saveToLocalStorage(this.minValue);
-            this.audioPlugin.play(alarmSound);
+            //this.audioPlugin.play(alarmSound);
           }
         });
       });
@@ -161,6 +192,16 @@ class MyHomePageState extends State<MyHomePage> {
           ],
         ),
         Text("Consulta: " + this.queryDate),
+        // TODO: Display a banner when ready
+        if (_isBannerAdReady)
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              width: _bannerAd.size.width.toDouble(),
+              height: _bannerAd.size.height.toDouble(),
+              child: AdWidget(ad: _bannerAd),
+            ),
+          ),
         Expanded(
           child: ListView(
             children: finalCards,
