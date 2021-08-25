@@ -21,7 +21,7 @@ class Tkambio extends MainProvider implements ProviderInterface {
   Future<String> fetchData() async {
     //var response = await http.get(this.url);
     Response response =
-        await post(new Uri(path: url), body: {'action': 'get_tipo_cambio'});
+        await post(Uri.parse(url), body: {'action': 'get_tipo_cambio'});
 
     // sample info available in response
     //int statusCode = response.statusCode;

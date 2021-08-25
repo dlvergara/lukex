@@ -29,9 +29,13 @@ class Util {
   }
 
   getFromLocalStorage() {
-    double variable = storage.getItem('lukex_min_val_usd');
-    if (variable == null) {
-      variable = 0;
+    double variable = 0;
+    try {
+      variable = storage.getItem('lukex_min_val_usd');
+    } catch (e) {
+      print("------------- Exception -------------");
+      print(e);
+      print("------------- /Exception -------------");
     }
     return variable;
   }

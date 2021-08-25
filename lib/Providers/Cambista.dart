@@ -16,7 +16,7 @@ class Cambista extends MainProvider implements ProviderInterface {
     String fullUrl = this.url;
 
     Response response = await get(
-      fullUrl,
+      Uri.parse(fullUrl),
       headers: {
         //'Content-type': "application/x-www-form-urlencoded; charset=UTF-8"
       },

@@ -23,17 +23,15 @@ class CocosYLucas extends MainProvider implements ProviderInterface {
   Future<String> getToken() async {
     Response response =
         await post(
-        new Uri(path: 'https://www.cocosylucasbcp.com/toc'),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-          'app-code': 'MY',
-          'referer': 'https://www.cocosylucasbcp.com/',
-          'origin': 'https://www.cocosylucasbcp.com',
-          'dnt': '1',
-        },
-        body: {
-          'fn': 'obtenerToken'
-        });
+        Uri.parse('https://www.cocosylucasbcp.com/toc'), headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+      'app-code': 'MY',
+      'referer': 'https://www.cocosylucasbcp.com/',
+      'origin': 'https://www.cocosylucasbcp.com',
+      'dnt': '1',
+    }, body: {
+      'fn': 'obtenerToken'
+    });
 
     Map<String, dynamic> parsed = jsonDecode(response.body);
     String data = parsed['access_token'];
@@ -45,7 +43,7 @@ class CocosYLucas extends MainProvider implements ProviderInterface {
     String result = "0.0";
     String token = await getToken();
 
-    Response response = await get(new Uri(path: url), headers: {
+    Response response = await get(Uri.parse(url), headers: {
       'authorization': 'Bearer $token',
       'dnt': '1',
       'referer': 'https://www.cocosylucasbcp.com/',

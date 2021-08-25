@@ -18,7 +18,7 @@ class JetPeru extends MainProvider implements ProviderInterface {
 
   Future<String> getToken() async {
     Response response = await post(
-        new Uri(path: 'http://jetperu.com.pe/_procesos.php'),
+        Uri.parse('http://jetperu.com.pe/_procesos.php'),
         body: {'fn': 'obtenerToken'});
 
     Map<String, dynamic> parsed = jsonDecode(response.body);
@@ -33,9 +33,8 @@ class JetPeru extends MainProvider implements ProviderInterface {
 
     Map<String, String> headers = {"Authorization": "Bearer $token"};
     Response response = await get(
-        new Uri(
-            path:
-                'http://apitc.jetperu.com.pe:5002/api/WebTipoCambio?monedaOrigenId=PEN'),
+        Uri.parse(
+            'http://apitc.jetperu.com.pe:5002/api/WebTipoCambio?monedaOrigenId=PEN'),
         headers: headers);
 
     //print(response.statusCode);

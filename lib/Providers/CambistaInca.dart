@@ -14,7 +14,7 @@ class CambistaInca extends MainProvider implements ProviderInterface {
     String resultado = "20.1";
     String fullUrl = this.url + '/admin/obtenertipocambio.php';
 
-    Response response = await post(new Uri(path: fullUrl), headers: {
+    Response response = await post(Uri.parse(fullUrl), headers: {
       'Content-type': "application/x-www-form-urlencoded; charset=UTF-8"
     }, body: {
       'cTipoOperacion': "01",

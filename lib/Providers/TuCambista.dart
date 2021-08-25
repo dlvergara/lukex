@@ -17,7 +17,7 @@ class TuCambista extends MainProvider implements ProviderInterface {
         this.url + 'api/transaction/getquote/500/USD/BUY/?_=' + time.toString();
 
     Response response = await get(
-        new Uri(path: fullUrl),
+      Uri.parse(fullUrl),
       headers: {
         //'Content-type': "application/x-www-form-urlencoded; charset=UTF-8"
       },
