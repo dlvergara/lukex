@@ -28,6 +28,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   late BannerAd _bannerAd;
   var banners = [];
+  var bannersAdded = [];
 
   bool _isBannerAdReady = false;
 
@@ -155,6 +156,7 @@ class MyHomePageState extends State<MyHomePage> {
       if (pos == bannerPos) {
         pos = 0;
         BannerAd banner = this.banners.last;
+        this.bannersAdded.add(banner);
         finalCards.add(
           Container(
             width: banner.size.width.toDouble(),
@@ -240,5 +242,14 @@ class MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.refresh),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    this._bannerAd.dispose();
+    for (var ban in this.bannersAdded) {
+      ban.dispose();
+    }
+    super.dispose();
   }
 }
