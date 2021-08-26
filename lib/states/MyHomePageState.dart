@@ -123,7 +123,7 @@ class MyHomePageState extends State<MyHomePage> {
 
     int bannersNeeded = this.cards.length ~/ bannerPos;
 
-    for (int i = 0; i <= bannersNeeded; i++) {
+    for (int i = 1; i <= bannersNeeded; i++) {
       BannerAd ban = BannerAd(
         adUnitId: AdHelper.bannerAdUnitId,
         request: AdRequest(),
