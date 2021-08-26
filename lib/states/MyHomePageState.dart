@@ -73,7 +73,6 @@ class MyHomePageState extends State<MyHomePage> {
     try {
       MobileAds.instance.initialize();
 
-      // TODO: Initialize _bannerAd
       _bannerAd = BannerAd(
         adUnitId: AdHelper.bannerAdUnitId,
         request: AdRequest(),
@@ -91,12 +90,12 @@ class MyHomePageState extends State<MyHomePage> {
           },
         ),
       );
-
       _bannerAd.load();
 
       cron.schedule(Schedule.parse('*/15 * * * *'), () async {
         print('every 10 minutes');
         this.getValues().then((value) {
+          createBanners();
           setState(() {});
 
           double previousValue = util.getFromLocalStorage();
@@ -114,17 +113,13 @@ class MyHomePageState extends State<MyHomePage> {
     }
 
     this.getValues().then((value) {
+      createBanners();
       setState(() {});
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    this.minValue = 10;
-    var finalCards = <Widget>[];
-
-    this.cards.sort((a, b) => (a[1].amount).compareTo(b[1].amount));
-    int pos = 0;
+  void createBanners() {
+    print("Cards: " + this.cards.length.toString());
 
     int bannersNeeded = this.cards.length ~/ bannerPos;
 
@@ -150,21 +145,37 @@ class MyHomePageState extends State<MyHomePage> {
       this.banners.add(ban);
     }
 
+    for (var ban in this.bannersAdded) {
+      ban.dispose();
+    }
+    print("Banners created: " + this.banners.length.toString());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    this.minValue = 10;
+    var finalCards = <Widget>[];
+
+    this.cards.sort((a, b) => (a[1].amount).compareTo(b[1].amount));
+    int pos = 0;
+
     this.cards.forEach((element) {
       finalCards.add(element[1].card);
       pos++;
       if (pos == bannerPos) {
         pos = 0;
-        BannerAd banner = this.banners.last;
-        this.bannersAdded.add(banner);
-        finalCards.add(
-          Container(
-            width: banner.size.width.toDouble(),
-            height: banner.size.height.toDouble(),
-            child: AdWidget(ad: banner),
-          ),
-        );
-        this.banners.removeLast();
+        if (this.banners.isNotEmpty) {
+          BannerAd banner = this.banners.last;
+          this.bannersAdded.add(banner);
+          finalCards.add(
+            Container(
+              width: banner.size.width.toDouble(),
+              height: banner.size.height.toDouble(),
+              child: AdWidget(ad: banner),
+            ),
+          );
+          this.banners.removeLast();
+        }
       }
     });
 

@@ -31,7 +31,7 @@ class ProviderGenerator {
       print("Providers found -> " + results.length.toString());
       for (var row in results) {
         String name = row['class_name'];
-        print('Provider from db -> ' + name);
+        //print('Provider from db -> ' + name);
         MainProvider provider;
         switch (name) {
           case 'TuCambista':
@@ -81,6 +81,8 @@ class ProviderGenerator {
             break;
           case 'Cambista':
             provider = new Cambista();
+            setProviderData(provider, row);
+            providerList.add(provider);
             break;
         }
       }
@@ -99,7 +101,7 @@ class ProviderGenerator {
 
   Widget getLogo(MainProvider provider) {
     Widget logo = FlutterLogo(size: 72.0);
-    if (provider.logo != null && provider.logo != '') {
+    if (provider.logo != '') {
       logo = Image.network(provider.logo);
       String extension = p.extension(provider.logo);
       if (extension == '.svg') {
