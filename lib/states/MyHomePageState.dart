@@ -158,7 +158,6 @@ class MyHomePageState extends State<MyHomePage> {
 
     this.cards.sort((a, b) => (a[1].amount).compareTo(b[1].amount));
     int pos = 0;
-
     this.cards.forEach((element) {
       finalCards.add(element[1].card);
       pos++;
@@ -224,14 +223,12 @@ class MyHomePageState extends State<MyHomePage> {
                 iconSize: 48,
                 tooltip: 'Ordenar',
                 onPressed: () {
-                  print('Ordenar!');
                   setState(() {});
                 },
                 icon: Icon(Icons.sort_rounded)),
           ],
         ),
         Text("Consulta: " + this.queryDate),
-        // TODO: Display a banner when ready
         if (_isBannerAdReady)
           Align(
             alignment: Alignment.topCenter,
