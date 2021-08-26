@@ -213,7 +213,7 @@ class MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(children: <Widget>[
         Text(valorRefMessage),
-        Text("Cantidad de proveedores: " + finalCards.length.toString()),
+        Text("Cantidad de proveedores: " + this.cards.length.toString()),
         ButtonBar(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
