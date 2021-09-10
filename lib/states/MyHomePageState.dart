@@ -21,6 +21,7 @@ class MyHomePageState extends State<MyHomePage> {
   final cron = Cron();
   String localFilePath = "";
   static const bannerPos = 3;
+  int sortIndex = 0;
 
   //AudioPlayer audioPlugin = AudioPlayer();
   ProviderGenerator gen = new ProviderGenerator();
@@ -158,6 +159,9 @@ class MyHomePageState extends State<MyHomePage> {
 
     this.cards.sort((a, b) => (a[1].amount).compareTo(b[1].amount));
     int pos = 0;
+    if (this.sortIndex == 1) {
+      this.cards = this.cards.reversed.toList();
+    }
     this.cards.forEach((element) {
       finalCards.add(element[1].card);
       pos++;
@@ -183,6 +187,9 @@ class MyHomePageState extends State<MyHomePage> {
     if (previousValue > 0) {
       valorRefMessage = "Valor de Ref: " + previousValue.toString();
     }
+
+    ///SORT WIDGET
+    Widget sortWidget = this.getSortWidget();
 
     return Scaffold(
       appBar: AppBar(
@@ -218,14 +225,7 @@ class MyHomePageState extends State<MyHomePage> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             //ORDERNAR
-            new IconButton(
-                alignment: Alignment.topRight,
-                iconSize: 48,
-                tooltip: 'Ordenar',
-                onPressed: () {
-                  setState(() {});
-                },
-                icon: Icon(Icons.sort_rounded)),
+            sortWidget
           ],
         ),
         Text("Consulta: " + this.queryDate),
@@ -250,6 +250,31 @@ class MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.refresh),
       ),
     );
+  }
+
+  Widget getSortWidget() {
+    Widget sortWidget = new IconButton(
+        alignment: Alignment.topRight,
+        iconSize: 32,
+        tooltip: 'Ordenar',
+        onPressed: () {
+          this.sortIndex = 1;
+          setState(() {});
+        },
+        icon: Icon(Icons.south));
+
+    if (this.sortIndex == 1) {
+      sortWidget = new IconButton(
+          alignment: Alignment.topLeft,
+          iconSize: 32,
+          tooltip: 'Ordenar',
+          onPressed: () {
+            this.sortIndex = 0;
+            setState(() {});
+          },
+          icon: Icon(Icons.north));
+    }
+    return sortWidget;
   }
 
   @override
