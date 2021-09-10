@@ -41,6 +41,7 @@ class MyHomePageState extends State<MyHomePage> {
   //Refresh
   void _incrementCounter() {
     this.getValues().then((value) {
+      this.sortIndex = 0;
       setState(() {});
     });
   }
@@ -159,7 +160,7 @@ class MyHomePageState extends State<MyHomePage> {
 
     this.cards.sort((a, b) => (a[1].amount).compareTo(b[1].amount));
     int pos = 0;
-    if (this.sortIndex == 1) {
+    if (this.sortIndex == 2) {
       this.cards = this.cards.reversed.toList();
     }
     this.cards.forEach((element) {
@@ -255,13 +256,13 @@ class MyHomePageState extends State<MyHomePage> {
   Widget getSortWidget() {
     Widget sortWidget = new IconButton(
         alignment: Alignment.topRight,
-        iconSize: 32,
+        iconSize: 40,
         tooltip: 'Ordenar',
         onPressed: () {
           this.sortIndex = 1;
           setState(() {});
         },
-        icon: Icon(Icons.south));
+        icon: Icon(Icons.sort));
 
     if (this.sortIndex == 1) {
       sortWidget = new IconButton(
@@ -269,7 +270,18 @@ class MyHomePageState extends State<MyHomePage> {
           iconSize: 32,
           tooltip: 'Ordenar',
           onPressed: () {
-            this.sortIndex = 0;
+            this.sortIndex = 2;
+            setState(() {});
+          },
+          icon: Icon(Icons.south));
+    }
+    if (this.sortIndex == 2) {
+      sortWidget = new IconButton(
+          alignment: Alignment.topLeft,
+          iconSize: 32,
+          tooltip: 'Ordenar',
+          onPressed: () {
+            this.sortIndex = 1;
             setState(() {});
           },
           icon: Icon(Icons.north));
