@@ -17,6 +17,9 @@ class MidPointFx extends MainProvider implements ProviderInterface {
       Uri.parse(fullUrl),
       headers: {
         //'Content-type': "application/x-www-form-urlencoded; charset=UTF-8"
+        'Access-Control-Allow-Origin': '*',
+        'Accept': 'application/json',
+        'Origin': this.url
       },
     );
 

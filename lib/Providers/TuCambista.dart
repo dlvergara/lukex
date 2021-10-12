@@ -20,7 +20,8 @@ class TuCambista extends MainProvider implements ProviderInterface {
       Uri.parse(fullUrl),
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Origin': this.url
         //'Content-type': "application/x-www-form-urlencoded; charset=UTF-8"
       },
     );
