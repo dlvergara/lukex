@@ -21,9 +21,11 @@ class Util {
   clearLocalStorage() async {
     try {
       await storage.clear();
-    } catch (e) {
+    } catch (e, stacktrace) {
       print("------------- Exception -------------");
       print(e);
+      print("Stacktrace: ");
+      print(stacktrace);
       print("------------- /Exception -------------");
     }
   }
@@ -31,10 +33,14 @@ class Util {
   getFromLocalStorage() {
     double variable = 0;
     try {
-      variable = storage.getItem('lukex_min_val_usd');
-    } catch (e) {
+      variable = (storage.getItem('lukex_min_val_usd') == null)
+          ? 0
+          : storage.getItem('lukex_min_val_usd');
+    } catch (e, stacktrace) {
       print("------------- Exception -------------");
       print(e);
+      print("Stacktrace: ");
+      print(stacktrace);
       print("------------- /Exception -------------");
     }
     return variable;

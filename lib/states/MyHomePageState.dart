@@ -1,6 +1,9 @@
 //import 'package:audioplayer/audioplayer.dart';
 import 'package:cron/cron.dart';
 import 'package:flutter/cupertino.dart';
+
+//import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lukex/Helper/LukexCard.dart';
@@ -68,31 +71,38 @@ class MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void initAdds() {
+    MobileAds.instance.initialize();
+
+    _bannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print('Failed to load a banner ad: ${err.message}');
+          _isBannerAdReady = false;
+          ad.dispose();
+        },
+      ),
+    );
+    _bannerAd.load();
+  }
+
   @override
   void initState() {
     super.initState();
+    //print('OS: ${Platform.operatingSystem}');
 
     try {
-      MobileAds.instance.initialize();
-
-      _bannerAd = BannerAd(
-        adUnitId: AdHelper.bannerAdUnitId,
-        request: AdRequest(),
-        size: AdSize.banner,
-        listener: BannerAdListener(
-          onAdLoaded: (_) {
-            setState(() {
-              _isBannerAdReady = true;
-            });
-          },
-          onAdFailedToLoad: (ad, err) {
-            print('Failed to load a banner ad: ${err.message}');
-            _isBannerAdReady = false;
-            ad.dispose();
-          },
-        ),
-      );
-      _bannerAd.load();
+      if (!kIsWeb) {
+        this.initAdds();
+      }
 
       cron.schedule(Schedule.parse('*/15 * * * *'), () async {
         print('every 10 minutes');
@@ -108,14 +118,18 @@ class MyHomePageState extends State<MyHomePage> {
           }
         });
       });
-    } catch (e) {
+    } catch (e, stacktrace) {
       print("------------- Exception -------------");
       print(e);
+      print("Stack trace: ");
+      print(stacktrace);
       print("------------- /Exception -------------");
     }
 
     this.getValues().then((value) {
-      createBanners();
+      if (!kIsWeb) {
+        createBanners();
+      }
       setState(() {});
     });
   }
