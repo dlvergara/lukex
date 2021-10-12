@@ -19,6 +19,8 @@ class TuCambista extends MainProvider implements ProviderInterface {
     Response response = await get(
       Uri.parse(fullUrl),
       headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Accept': 'application/json'
         //'Content-type': "application/x-www-form-urlencoded; charset=UTF-8"
       },
     );
