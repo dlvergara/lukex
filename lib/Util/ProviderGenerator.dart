@@ -34,8 +34,18 @@ class ProviderGenerator {
   Future<List> getProviderDataFromFile() async {
     var providerList = [];
     try {
-      Map<String, dynamic> parsed = jsonDecode(
-          '{"RECORDS":[{"id":"1","name":"JetPeru","class_name":"JetPeru","status":"1","sort":"1","logo":"http://www.jetperu.com.pe/images/favicon/favicon.ico"},{"id":"2","name":"TuCambista","class_name":"TuCambista","status":"1","sort":"2","logo":"https://www.tucambista.pe/favicon.svg"},{"id":"3","name":"CambistaInka","class_name":"CambistaInca","status":"1","sort":"1.1","logo":"https://cambistainka.com/images/favicon.ico"},{"id":"4","name":"Acomo","class_name":"Acomo","status":"1","sort":"1.01","logo":"https://www.acomo.com.pe/img/acomo-logo-icon.png"},{"id":"5","name":"CocosYLucas","class_name":"CocosYLucas","status":"1","sort":"2.1","logo":"https://www.cocosylucasbcp.com/assets/favicon/favicon-96x96.png"},{"id":"6","name":"Tkambio","class_name":"Tkambio","status":"0","sort":"2.2","logo":""},{"id":"7","name":"MidPointFx","class_name":"MidPointFx","status":"1","sort":"2.21","logo":"https://static.wixstatic.com/media/fe8e72_f3209a3b7b904e3b880c7c3182cc5cd4~mv2.png/v1/fill/w_32%2Ch_32%2Clg_1%2Cusm_0.66_1.00_0.01/fe8e72_f3209a3b7b904e3b880c7c3182cc5cd4~mv2.png"},{"id":"8","name":"Securex","class_name":"Securex","status":"1","sort":"2.2","logo":"https://securexweb.s3.amazonaws.com/ambientePrueba/Resources/WebContent/public/web/img/favicon.ico"},{"id":"9","name":"Roblex","class_name":"Roblex","status":"1","sort":"3","logo":"https://cdn.roblex.pe/favicon/favicon-32x32.png"},{"id":"10","name":"Cambista","class_name":"Cambista","status":"1","sort":"4","logo":"https://cambista.com/wp-content/uploads/2020/04/cropped-cambista-favi-icon-32x32.png"}]}');
+      Map<String, dynamic> parsed = jsonDecode('{"RECORDS":['
+          '{"id":"1","name":"JetPeru","class_name":"JetPeru","status":"1","sort":"1","logo":"http://www.jetperu.com.pe/images/favicon/favicon.ico"},'
+          '{"id":"2","name":"TuCambista","class_name":"TuCambista","status":"1","sort":"2","logo":"https://www.tucambista.pe/favicon.svg"},'
+          '{"id":"3","name":"CambistaInka","class_name":"CambistaInca","status":"1","sort":"1.1","logo":"https://cambistainka.com/images/favicon.ico"},'
+          '{"id":"4","name":"Acomo","class_name":"Acomo","status":"1","sort":"1.01","logo":"https://www.acomo.com.pe/img/acomo-logo-icon.png"},'
+          '{"id":"5","name":"CocosYLucas","class_name":"CocosYLucas","status":"1","sort":"2.1","logo":"https://www.cocosylucasbcp.com/assets/favicon/favicon-96x96.png"},'
+          '{"id":"6","name":"Tkambio","class_name":"Tkambio","status":"0","sort":"2.2","logo":""},'
+          '{"id":"7","name":"MidPointFx","class_name":"MidPointFx","status":"1","sort":"2.21","logo":"https://static.wixstatic.com/media/fe8e72_f3209a3b7b904e3b880c7c3182cc5cd4~mv2.png/v1/fill/w_32%2Ch_32%2Clg_1%2Cusm_0.66_1.00_0.01/fe8e72_f3209a3b7b904e3b880c7c3182cc5cd4~mv2.png"},'
+          '{"id":"8","name":"Securex","class_name":"Securex","status":"1","sort":"2.2","logo":"https://securexweb.s3.amazonaws.com/ambientePrueba/Resources/WebContent/public/web/img/favicon.ico"},'
+          '{"id":"9","name":"Roblex","class_name":"Roblex","status":"1","sort":"3","logo":"https://cdn.roblex.pe/favicon/favicon-32x32.png"},'
+          '{"id":"10","name":"Cambista","class_name":"Cambista","status":"1","sort":"4","logo":"https://cambista.com/wp-content/uploads/2020/04/cropped-cambista-favi-icon-32x32.png"}'
+          ']}');
 
       var results = parsed['RECORDS'];
       providerList = createProviderFromResult(results);
