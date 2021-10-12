@@ -45,7 +45,7 @@ class CocosYLucas extends MainProvider implements ProviderInterface {
   Future<String> fetchData() async {
     String result = "0.0";
     String token = await getToken();
-    print("CocosyLucas Token: " + token);
+    //print("CocosyLucas Token: " + token);
 
     if (token != "") {
       Response response = await get(Uri.parse(url), headers: {
